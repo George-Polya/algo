@@ -4,53 +4,67 @@ import java.util.*;
 public class Main {
 	static int n;
 	static int MAX_N = 10000;
-	static int stk[] = new int[MAX_N];
-	static int top = -1;
+	
 	static StringTokenizer st;
-	static void printStack() {
-		for(int i =0; i < top; i++) {
-			System.out.print(stk[i]+ " ");
-		}
-		System.out.println();
+	
+	static class Node{
+		Node prev, next;
+		int value;
 	}
+	
+	static Node top = null;
+	static int size = 0;
+	static Node getNewNode(int num) {
+		Node node = new Node();
+		node.value = num;
+		return node;
+	}
+	
 	public static void main(String[] args) throws IOException{
 		// TODO Auto-generated method stub
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		n = Integer.parseInt(br.readLine());
 		StringBuilder sb = new StringBuilder();
+		
 		for(int i = 0; i < n ; i++) {
 			st = new StringTokenizer(br.readLine());
 			String op = st.nextToken();
 			if(op.equals("push")) {
 				int num = Integer.parseInt(st.nextToken());
-				top++;
-				stk[top] = num;
-//				System.out.println(stk[top]);
-				
-			}else if(op.equals("pop")) {
-				if(top == -1) {
-					System.out.println(-1);
-//					sb.append(-1).append('\n');
+				Node node = getNewNode(num);
+				if(top == null) {
+					top = node;
 				}else {
-					int ret = stk[top];
-					top--;
-					System.out.println(ret);
+					top.next = node;
+					node.prev = top;
+					top = node;
 				}
-				
+				size++;
+			}else if(op.equals("pop")) {
+				if(top == null) {
+//					System.out.println(-1);
+					sb.append(-1).append('\n');
+				}else {
+					size--;
+					int ret = top.value;
+					top = top.prev;
+//					System.out.println(ret);
+					sb.append(ret).append('\n');
+				}
 				
 			}else if(op.equals("size")) {
-				System.out.println(top+1);
+//				System.out.println(size);
+				sb.append(size).append('\n');
 			}else if(op.equals("empty")) {
-				System.out.println(top == -1 ? 1 : 0);
+//				System.out.println(top==null ? 1 : 0);
+				sb.append(top == null ? 1 : 0).append('\n');
 			}else if(op.equals("top")){
-				if(top == -1) {
-					System.out.println(-1);
-				}else {
-					System.out.println(stk[top]);
-				}
+//				System.out.println(top == null ? -1 : top.value);
+				sb.append(top == null ? -1 : top.value).append('\n');
 			}
 		}
 		
+		System.out.println(sb);
 	}
 
 }
