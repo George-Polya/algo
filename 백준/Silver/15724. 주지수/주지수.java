@@ -27,21 +27,15 @@ public class Main {
 	 	n = Integer.parseInt(st.nextToken());
 	 	m = Integer.parseInt(st.nextToken());
 	 	board = new int[n+1][m+1];
+	 	pSum = new int[n+1][m+1];
 	 	for(int y=1; y<=n; y++) {
 	 		st = new StringTokenizer(br.readLine());
 	 		for(int x=1; x<=m; x++) {
 	 			board[y][x] = Integer.parseInt(st.nextToken());
-	 		}
-	 	}
-	 	
-	 	pSum = new int[n+1][m+1];
-	 	for(int y=1; y<=n; y++) {
-	 		for(int x=1;x<=m; x++) {
 	 			pSum[y][x] = pSum[y-1][x] + pSum[y][x-1] + board[y][x] - pSum[y-1][x-1];
 	 		}
 	 	}
 	 	
-//	 	printBoard(pSum);
 	 	
 	 	k = Integer.parseInt(br.readLine());
 	 	StringBuilder sb = new StringBuilder();
