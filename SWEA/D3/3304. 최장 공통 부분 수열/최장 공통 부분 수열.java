@@ -2,10 +2,10 @@ import java.io.*;
 import java.util.*;
 public class Solution {
 	static int T;
-	static String a,b;
-	static int n,m;
-	static StringTokenizer st;
+	static String A, B;
 	static int dp[][];
+	static StringTokenizer st;
+	static int n,m;
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		T = Integer.parseInt(br.readLine());
@@ -13,32 +13,37 @@ public class Solution {
 		
 		for(int tc=1;tc<=T;tc++) {
 			st = new StringTokenizer(br.readLine());
-			a = st.nextToken();
-			b = st.nextToken();
-			n = a.length();
-			m = b.length();
-			a = "#" + a;
-			b = "#" + b;
+			A = st.nextToken();
+			B = st.nextToken();
+			n = A.length();
+			m = B.length();
+			A = "#"+A;
+			B = "#"+B;
 			
 			dp = new int[n+1][m+1];
-			for(int y=1; y<=n; y++) {
-				for(int x=1; x<=m; x++) {
-					if(a.charAt(y) == b.charAt(x) ){
-						dp[y][x] = dp[y-1][x-1] + 1;
+			
+			for(int i = 1; i<=n; i++) {
+				for(int j = 1; j<=m; j++) {
+					if(A.charAt(i) != B.charAt(j)) {
+						dp[i][j] = Math.max(dp[i][j], Math.max(dp[i-1][j], dp[i][j-1]));
 					}else {
-						dp[y][x] = Math.max(dp[y-1][x], dp[y][x-1]);
+						dp[i][j] = Math.max(dp[i][j], dp[i-1][j-1]+1);
 					}
 				}
 			}
-			int ans = 0;
-			for(int y=1;y<=n;y++) {
-				for(int x=1;x<=m;x++)
-					ans = Math.max(ans, dp[y][x]);
-			}
 			
-			sb.append("#").append(tc).append(' ').append(ans).append('\n');
+//			for(int i = 1; i<=n; i++) {
+//				for(int j = 1; j<=m; j++) {
+//					System.out.print(dp[i][j]+" ");
+//				}
+//				System.out.println();
+//			}
 			
+			sb.append('#').append(tc).append(' ').append(dp[n][m]).append('\n');
+				
 		}
 		System.out.println(sb);
 	}
+	
+	
 }
