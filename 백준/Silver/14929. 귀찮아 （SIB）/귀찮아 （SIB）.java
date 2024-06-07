@@ -11,24 +11,25 @@ public class Main {
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		n = Integer.parseInt(br.readLine());
-		arr = new int[n];
+		arr = new int[n+1];
 		st = new StringTokenizer(br.readLine());
 		
 		pSum = new int[n+1];
 		
-		int sum = 0;
-		for(int i = 0; i<n; i++) {
+		for(int i = 1; i<=n; i++) {
 			arr[i] = Integer.parseInt(st.nextToken());
-			sum += arr[i];
-			pSum[i+1] = sum;
+			if(i == 1) {
+				pSum[i] = arr[i];
+			}else {
+				pSum[i] = pSum[i-1] + arr[i];
+			}
 		}
 
-//		System.out.println(Arrays.toString(pSum));
 		
 		long ans = 0;
-		for(int i = 0; i <n;i++) {
+		for(int i = 1; i <=n;i++) {
 			int cur = arr[i];
-			ans += cur * (pSum[n]-pSum[i+1]);
+			ans += cur * (pSum[n]-pSum[i]);
 		}
 	
 		System.out.println(ans);
