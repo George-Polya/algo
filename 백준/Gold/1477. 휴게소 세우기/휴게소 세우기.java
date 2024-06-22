@@ -7,15 +7,26 @@ public class Main {
 	static boolean decide(int target) {
 		int cnt = 0;
 		
-		for(int i = 0; i <= arr.length-2; i++) {
-			int len = arr[i+1] - arr[i];
+		int start = 0;
+		int end = l;
+		
+		
+		for(int i = 0; i < n; i++) {
+			int cur = arr[i];
 			
+			int len = cur - start;
 			cnt += len / target;
-			
 			if(len % target == 0)
 				cnt--;
+			start = cur;
 		}
+		
+		int len = end - start;
+		cnt += len / target;
+		if(len % target == 0)
+			cnt--;
 		return cnt <= m;
+		
 	}
 	public static void main(String[] args) throws IOException{
 //		System.setIn(new FileInputStream("./input.txt"));
@@ -25,13 +36,11 @@ public class Main {
 		m = Integer.parseInt(st.nextToken());
 		l = Integer.parseInt(st.nextToken());
 		
-		arr = new int[n + 2];
-		arr[0] = 0;
-		arr[n+1] = l;
+		arr = new int[n];
 		
 		if(n != 0) {
 			st = new StringTokenizer(br.readLine());
-			for(int i = 1; i <= n;i++) {
+			for(int i = 0; i < n;i++) {
 				arr[i] = Integer.parseInt(st.nextToken());
 			}
 			Arrays.sort(arr);
