@@ -4,7 +4,7 @@ public class Main {
 	static StringTokenizer st;
 	static int t, k;
 	static int coins[][];
-	static int dp[];
+	static int dp[][];
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		t = Integer.parseInt(br.readLine());
@@ -21,23 +21,26 @@ public class Main {
 			return a[0] - b[0];
 		});
 		
-		dp = new int[t+1];
-		
-		dp[0] = 1;
+		dp = new int[k+1][t+1];
+
+		for(int i = 0; i<=k; i++) {
+			dp[i][0] = 1;
+		}
 		
 		for(int i =1; i<=k;i++) {
 			int cost = coins[i][0];
 			int cnt = coins[i][1];
 			
-			for(int money = t; money>=0; money--) {
-				for(int c =1 ; c<=cnt;c++) {
+			for(int money = 1; money<=t; money++) {
+				for(int c =0 ; c<=cnt;c++) {
 					if(money < cost * c)
-						continue;
-					dp[money] += dp[money - cost * c];
+						break;
+//					dp[money] += dp[money - cost * c];
+					dp[i][money] += dp[i-1][money - cost * c];
 				}
 			}
 		}
-		System.out.println(dp[t]);
+		System.out.println(dp[k][t]);
 		
 		
 	}
