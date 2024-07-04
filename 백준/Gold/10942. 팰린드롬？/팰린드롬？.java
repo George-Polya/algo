@@ -16,16 +16,10 @@ public class Main {
     	}
     	
     	dp = new boolean[n+1][n+1];
-    	for(int i=1;i<=n;i++) {
-    		dp[i][i] = true;
-    	}
-    	
-    	for(int i = 1; i<=n-1;i++) {
-    		dp[i][i+1] = arr[i] == arr[i+1];
-    	}
+
     	
     	for(int e = 1; e<=n; e++) {
-    		for(int s = 1; s<e; s++) {
+    		for(int s = 1; s<=e; s++) {
     			if(s==e) {
     				dp[s][e] = true;
     			}else if(e - s == 1) {
