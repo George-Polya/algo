@@ -1,40 +1,48 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-
-
-        int n = Integer.parseInt(br.readLine());
-        int arr[][] = new int[n+1][n+1];
-        int input[] = new int[n+1];
-
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        for(int j=1;j<=n;j++){
-            int temp = Integer.parseInt(st.nextToken());
-            input[j]=temp;
-            for(int i=1;i<=j;i++){
-                if(i==j)arr[i][j]=1;
-                else if(j-i==1) arr[i][j] = (input[j]==input[i])?1 : 0;
-                else {
-                    arr[i][j] = (input[j]==input[i] && arr[i+1][j-1]==1)?1 : 0;
-                }
-            }
-        }
-
-        int TC = Integer.parseInt(br.readLine());
-        while(TC --> 0 ){
-            st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            sb.append(arr[a][b]).append("\n");
-        }
-
-        System.out.println(sb);
+	static StringTokenizer st;
+	static int arr[];
+	static int n,m;
+	static boolean dp[][];
+    public static void main(String[] args) throws IOException{
+    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    	n = Integer.parseInt(br.readLine());
+    	arr = new int[n+1];
+    	st = new StringTokenizer(br.readLine());
+    	for(int i =1;i<=n;i++) {
+    		arr[i] = Integer.parseInt(st.nextToken());
+    	}
+    	
+    	dp = new boolean[n+1][n+1];
+    	for(int i=1;i<=n;i++) {
+    		dp[i][i] = true;
+    	}
+    	
+    	for(int i = 1; i<=n-1;i++) {
+    		dp[i][i+1] = arr[i] == arr[i+1];
+    	}
+    	
+    	for(int e = 1; e<=n; e++) {
+    		for(int s = 1; s<e; s++) {
+    			if(s==e) {
+    				dp[s][e] = true;
+    			}else if(e - s == 1) {
+    				dp[s][e] = arr[s]==arr[e];
+    			}else
+    				dp[s][e] = dp[s+1][e-1] && arr[s]==arr[e];
+    		}
+    	}
+    	
+    	m= Integer.parseInt(br.readLine());
+    	StringBuilder sb = new StringBuilder();
+    	for(int i=0;i<m;i++) {
+    		st = new StringTokenizer(br.readLine());
+    		int s = Integer.parseInt(st.nextToken());
+    		int e = Integer.parseInt(st.nextToken());
+    		sb.append(dp[s][e] ? 1 : 0).append('\n');
+    	}
+    	System.out.println(sb);
     }
 }
