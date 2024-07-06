@@ -29,7 +29,7 @@ class Solution {
         }
     }
     
-    static int upperBound(List<Integer> sums, int sum){
+    static int binarySearch(List<Integer> sums, int sum){
         int l = 0;
         int r = sums.size()-1;
         int ret = Integer.MIN_VALUE;
@@ -37,13 +37,7 @@ class Solution {
             int mid = (l+r)/2;
         
             
-//             if(sum < sums.get(mid)){
-//                 r = mid - 1;
-                
-//             }else{
-//                 l = mid + 1;
-//                 ret = Math.max(ret, mid);
-//             }
+
         
             if(sum > sums.get(mid)){
                 l = mid + 1;
@@ -72,7 +66,7 @@ class Solution {
             
             int winCnt = 0;
             for(int sum: aSums){
-                int idx = upperBound(bSums, sum);
+                int idx = binarySearch(bSums, sum);
                 if(idx != Integer.MIN_VALUE)
                     winCnt += idx + 1;
             }
