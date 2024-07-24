@@ -42,32 +42,36 @@ public class Main {
 	
 	static int offense(int y,int x,int dir) {
 		Queue<Pair> q = new LinkedList<>();
+		visited[y][x] = true;
 		q.add(new Pair(y,x));
 		int ret = 0;
 		while(!q.isEmpty()) {
 			Pair cur = q.poll();
 			int value = board[cur.y][cur.x];
+			ret++;
 			
-			for(int num=1;num<value;num++) {
-				int ny = cur.y + dy[dir] * num;
-				int nx = cur.x + dx[dir] * num;
-				if(OOB(ny,nx) || board[ny][nx] < 0)
+			for(int k=1;k<value;k++) {
+				int ny = cur.y + dy[dir] * k;
+				int nx = cur.x + dx[dir] * k;
+				if(OOB(ny,nx))
+					break;
+				
+				if(visited[ny][nx])
 					continue;
 				q.add(new Pair(ny,nx));
+				visited[ny][nx] = true;
 			}
 			
-			board[cur.y][cur.x] = -value;
-			ret++;
 		}
 		return ret;
 	}
 	
 	static void defense(int y, int x) {
-		if(board[y][x] > 0 )
-			return;
 		
-		board[y][x] = -board[y][x];
+		visited[y][x] = false;
 	}
+	
+	static boolean visited[][];
 	
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -77,6 +81,7 @@ public class Main {
 		r = Integer.parseInt(st.nextToken());
 		
 		board = new int[n+1][m+1];
+		visited = new boolean[n+1][m+1];
 		
 		for(int y= 1; y<=n; y++) {
 			st = new StringTokenizer(br.readLine());
@@ -85,7 +90,7 @@ public class Main {
 			}
 		}
 		
-		int score = 0;
+		long score = 0;
 		for(int turn =1 ;turn<=r;turn++) {
 //			System.out.println("------");
 //			System.out.println("turn: "+turn);
@@ -96,7 +101,8 @@ public class Main {
 			int dir = getDir(st.nextToken().charAt(0));
 //			char dir = st.nextToken().charAt(0);
 //			System.out.println(dir);
-			score += offense(y,x,dir);
+			if(!visited[y][x])
+				score += offense(y,x,dir);
 			
 			
 			st = new StringTokenizer(br.readLine());
@@ -110,7 +116,7 @@ public class Main {
 		sb.append(score).append('\n');
 		for(int y=1; y<=n; y++) {
 			for(int x=1; x<=m; x++) {
-				sb.append(board[y][x] <0 ? 'F' : 'S').append(' ');
+				sb.append(visited[y][x] ? 'F' : 'S').append(' ');
 			}
 			sb.append('\n');
 		}
