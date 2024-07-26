@@ -11,23 +11,21 @@ public class Main {
 	static long LONG_MAX = Long.MAX_VALUE;
 	static boolean visited[];
 	static boolean flag;
-	static void decide(int start, long k) {
-		if(start == n) {
-//			return true;
-			flag = true;
-			return;
+	static boolean decide(int cur, long k) {
+		if(cur == n) {
+			return true;
 		}
 		
-		for(int i = start + 1 ; i <=n; i++) {
-			long  result = (long)(i - start) * ( 1 + Math.abs(arr[start] - arr[i]));
+		for(int nxt = cur + 1 ; nxt <=n; nxt++) {
+			long  result = (long)(nxt - cur) * ( 1 + Math.abs(arr[cur] - arr[nxt]));
 			
-			if(result <= k && !visited[i]) {
-				visited[i] = true;
-//				return decide(i,k);
-				decide(i,k);
+			if(result <= k && !visited[nxt]) {
+				visited[nxt] = true;
+				if(decide(nxt,k))
+					return true;
 			}
 		}
-//		return false;
+		return false;
 		
 	}
 	public static void main(String[] args) throws IOException{
@@ -48,10 +46,10 @@ public class Main {
 		
 		while(l <= r) {
 			Arrays.fill(visited, false);
-			flag = false;
+//			flag = false;
 			visited[1] = true;
 			long mid = (l + r) / 2;
-			decide(1,mid);
+			flag = decide(1,mid);
 			if(flag) {
 				r = mid - 1;
 				ans = mid;
