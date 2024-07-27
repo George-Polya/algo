@@ -91,7 +91,7 @@ public class Main {
 	}
 	
 	static void solve(int sy,int sx ,int cnt) {
-		if(ans == 4) // ans는 4보다 작아질 수 없다.
+		if(ans == 4 || ans <= cnt) // ans는 4보다 작아질 수 없다.
 			return;
 		if(sy == 12 && sx == 12) { // 마지막까지 도달 했을 경
 			if(check())
