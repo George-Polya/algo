@@ -35,10 +35,12 @@ public class Main {
 	
 	static int colors[] = {0,5,5,5,5,5};
 	
-	
+	/*
+	 * 다음 위치 구하는 메소드 
+	 * 만약 모든 board[y][x] == 1인 (y,x)를 색종이로 채웠다면 NO_POS 리턴 
+	 */
 	static Pair getNxtPos() {
 		for(Pair p : ones) {
-//			System.out.printf("visited[%d][%d] : %b\n", p.y,p.x, visited[p.y][p.x]);
 			if(!visited[p.y][p.x])
 				return p;
 		}
@@ -54,7 +56,7 @@ public class Main {
 	 * 1. 종이의 경계를 벗어나지 않고,
 	 * 2. 이미 덮은 곳에 또 덮지 않을 때, 
 	 */
-	static boolean fillable(int sy,int sx ,int num) { // 채우면서 동시에 판단. 
+	static boolean fillable(int sy,int sx ,int num) { 
 		int ey = sy + num - 1;
 		int ex = sx + num - 1;
 		
@@ -62,7 +64,6 @@ public class Main {
 			for(int x= sx; x<=ex; x++) {
 				if(OOB(y,x) || visited[y][x] || board[y][x] == 0)
 					return false;
-//				visited[y][x] = true;
 			}
 		}
 		return true;
@@ -90,42 +91,27 @@ public class Main {
 	}
 	
 	static void solve(int sy,int sx ,int cnt) {
-//		printBoard();
-		if(ans == 4)
+		if(ans == 4) // ans는 4보다 작아질 수 없다.
 			return;
-		if(sy == 12 && sx == 12) {
+		if(sy == 12 && sx == 12) { // 마지막까지 도달 했을 경
 			if(check())
 				ans = Math.min(ans, cnt);
 			return;
 		}
 		
 		
-		for(int num=5; num>=1;num--) {
-//			System.out.println("-----");
-//			boolean fillable = fillable(sy,sx,num);
-//			System.out.println("fillable: "+fillable);
-			if(colors[num] == 0 || !fillable(sy,sx,num))
+		for(int num=5; num>=1 && colors[num] != 0;num--) {
+			// 사용하려는 색종이를 모두 소진했거나 채울 수 없으면 스
+			if(!fillable(sy,sx,num))
 				continue;
 			
 			fill(sy,sx,num, true);
 			colors[num]--;
-//			System.out.printf("(sy,sx): (%d,%d), cnt: %d\n", sy,sx,cnt);
-//			System.out.println("colors: "+Arrays.toString(colors));
-//			printBoard();
-			Pair nxt = getNxtPos(); 
-//			System.out.println("nxt: "+nxt);
+			Pair nxt = getNxtPos(); // 다음 위치 구하기. 
 			solve(nxt.y, nxt.x, cnt + 1);
 			colors[num]++;
-//			restore(sy,sx,num); // 복원
 			fill(sy,sx,num, false);
 		
-			// 사용하려는 색종이를 모두 소진했거나
-//			if(colors[num] == 0) 
-//				continue;
-//			boolean fillable = fillable(sy,sx,num);
-//			if(colors[num] != 0 && fillable ) {
-//				printBoard();
-//			}
 		}
 	}
 	
@@ -148,7 +134,6 @@ public class Main {
 		
 		int sy = ones.get(0).y;
 		int sx = ones.get(0).x;
-//		System.out.println(ones);
 		
 		solve(sy,sx,0);
 		System.out.println(ans == INT_MAX ? -1 : ans);
