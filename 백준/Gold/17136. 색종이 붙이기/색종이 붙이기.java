@@ -1,141 +1,96 @@
-import java.io.*;
-import java.util.*;
-
-
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.StringTokenizer;
+ 
 public class Main {
-	static StringTokenizer st;
-	static int board[][];
-	static int n = 10;
-	static boolean visited[][] = new boolean[n+1][n+1];
-	static class Pair{
-		int y,x;
-		public Pair(int y,int x) {
-			this.y = y;
-			this.x = x;
-		}
-		
-		public String toString() {
-			return y+" "+x;
-		}
-	}
-	
-	static Pair NO_POS = new Pair(12,12);
-	
-	static List<Pair> ones = new ArrayList<>();
-	static int INT_MAX = Integer.MAX_VALUE;
-	static int ans = INT_MAX;
-	
-	static boolean check() {
-		for(Pair p : ones) {
-			if(!visited[p.y][p.x])
-				return false;
-		}
-		return true;
-	}
-	
-	static int colors[] = {0,5,5,5,5,5};
-	
-	/*
-	 * 다음 위치 구하는 메소드 
-	 * 만약 모든 board[y][x] == 1인 (y,x)를 색종이로 채웠다면 NO_POS 리턴 
-	 */
-	static Pair getNxtPos() {
-		for(Pair p : ones) {
-			if(!visited[p.y][p.x])
-				return p;
-		}
-		return NO_POS;
-	}
-	
-	
-	static boolean OOB(int y,int x) {
-		return y<=0 || y>n || x<=0 || x > n;
-	}
-	/*
-	 * 덮을 수 있을 때란 언제인가?
-	 * 1. 종이의 경계를 벗어나지 않고,
-	 * 2. 이미 덮은 곳에 또 덮지 않을 때, 
-	 */
-	static boolean fillable(int sy,int sx ,int num) { 
-		int ey = sy + num - 1;
-		int ex = sx + num - 1;
-		
-		for(int y= sy; y<=ey; y++) {
-			for(int x= sx; x<=ex; x++) {
-				if(OOB(y,x) || visited[y][x] || board[y][x] == 0)
-					return false;
-			}
-		}
-		return true;
-	}
-	
-	static void fill(int sy, int sx, int num, boolean flag) {
-		int ey = sy + num - 1;
-		int ex = sx + num - 1;
-		
-		for(int y= sy; y<=ey; y++) {
-			for(int x= sx; x<=ex; x++) {
-				if(OOB(y,x))
-					continue;
-				visited[y][x] = flag;
-			}
-		}
-	}
-	
-	static void printBoard() {
-		for(int  y=1; y<=n; y++) {
-			for(int x=1; x<=n; x++)
-				System.out.print((visited[y][x] ? 1 : 0) +" " );
-			System.out.println();
-		}
-	}
-	
-	static void solve(int sy,int sx ,int cnt) {
-		if(ans == 4 || ans <= cnt) // ans는 4보다 작아질 수 없다.
-			return;
-		if(sy == 12 && sx == 12) { // 마지막까지 도달 했을 경
-			if(check())
-				ans = Math.min(ans, cnt);
-			return;
-		}
-		
-		
-		for(int num=5; num>=1 && colors[num] != 0;num--) {
-			// 사용하려는 색종이를 모두 소진했거나 채울 수 없으면 스
-			if(!fillable(sy,sx,num))
-				continue;
-			
-			fill(sy,sx,num, true);
-			colors[num]--;
-			Pair nxt = getNxtPos(); // 다음 위치 구하기. 
-			solve(nxt.y, nxt.x, cnt + 1);
-			colors[num]++;
-			fill(sy,sx,num, false);
-		
-		}
-	}
-	
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		board = new int[n+1][n+1];
-		for(int y= 1;y<=n;y++) {
-			st = new StringTokenizer(br.readLine());
-			for(int x = 1; x <= n ; x++) {
-				board[y][x]= Integer.parseInt(st.nextToken());
-				if(board[y][x] == 1)
-					ones.add(new Pair(y,x));
-			}
-		}
-		
-		if(ones.isEmpty()) {
-			System.out.println(0);
-			return;
-		}
-		
-		int sy = ones.get(0).y;
-		int sx = ones.get(0).x;
-		
-		solve(sy,sx,0);
-		System.out.println(ans == INT_MAX ? -1 : ans);
-	}
+    static int[][] map;
+    static int[] paper = { 0, 5, 5, 5, 5, 5 };
+    static int ans = Integer.MAX_VALUE;
+ 
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st;
+ 
+        map = new int[10][10];
+        for (int i = 0; i < map.length; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < map[i].length; j++) {
+                map[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+ 
+        DFS(0, 0, 0);
+ 
+        if (ans == Integer.MAX_VALUE) {
+            ans = -1;
+        }
+ 
+        bw.write(ans + "\n");
+        bw.close();
+        br.close();
+    }
+    
+    // DFS + 백트래킹
+    public static void DFS(int x, int y, int cnt) {
+        // 맨 끝점에 도달하였을 경우, ans와 cnt 비교하고 종료.
+        if (x >= 9 && y > 9) {
+            ans = Math.min(ans, cnt);
+            return;
+        }
+ 
+        // 최솟값을 구해야하는데 ans보다 cnt가 커지는 순간
+        // 더 이상 탐색할 필요가 없어짐.
+        if (ans <= cnt) {
+            return;
+        }
+ 
+        // 아래 줄로 이동.
+        if (y > 9) {
+            DFS(x + 1, 0, cnt);
+            return;
+        }
+ 
+        if (map[x][y] == 1) {
+            for (int i = 5; i >= 1; i--) {
+                if (paper[i] > 0 && isAttach(x, y, i)) {
+                    attach(x, y, i, 0); // 색종이를 붙임.
+                    paper[i]--;
+                    DFS(x, y + 1, cnt + 1);
+                    attach(x, y, i, 1); // 색종이를 다시 뗌.
+                    paper[i]++;
+                }
+            }
+        } else { // 오른쪽으로 이동.
+            DFS(x, y + 1, cnt);
+        }
+    }
+ 
+    // 색종이를 붙이는 함수.
+    public static void attach(int x, int y, int size, int state) {
+        for (int i = x; i < x + size; i++) {
+            for (int j = y; j < y + size; j++) {
+                map[i][j] = state;
+            }
+        }
+    }
+ 
+    // 색종이를 붙일 수 있는지 확인.
+    public static boolean isAttach(int x, int y, int size) {
+        for (int i = x; i < x + size; i++) {
+            for (int j = y; j < y + size; j++) {
+                if (i < 0 || i >= 10 || j < 0 || j >= 10) {
+                    return false;
+                }
+ 
+                if (map[i][j] != 1) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+ 
 }
