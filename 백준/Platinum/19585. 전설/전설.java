@@ -39,14 +39,16 @@ public class Main {
 		}
 	}
 	
-	static void markColorPoint(String team, Trie cursor, List<Integer> matchedPoints){
+	static List<Integer> markColorPoint(String team, Trie cursor){
+		List<Integer> ret = new ArrayList<>();
 		for(int i = 0; i < team.length();i++) {
 			cursor = cursor.nextTrie(team.charAt(i));
 			if(cursor == null)
-				return;
+				return ret;
 			if(cursor.isEnd && team.length() - (i+1) <= 1000)
-				matchedPoints.add(i);
+				ret.add(i);
 		}
+		return ret;
 	}
 	
 	static String matchNicknamePoint(String team, List<Integer> matchedPoints) {
@@ -78,8 +80,8 @@ public class Main {
 		
 		for(int i = 0; i < q; i++) {
 			String team = br.readLine();
-			List<Integer> matchedPoints = new ArrayList<>();
-			markColorPoint(team, root, matchedPoints);
+			List<Integer> matchedPoints = markColorPoint(team, root);
+			
 			sb.append(matchNicknamePoint(team, matchedPoints)).append('\n');
 		}
 		System.out.println(sb);
