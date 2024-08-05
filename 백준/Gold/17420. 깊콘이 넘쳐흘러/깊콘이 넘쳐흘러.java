@@ -36,7 +36,7 @@ public class Main {
 		
 		int p = arr[0][0];
 		int th = arr[0][1];
-		int ans = 0;
+		long ans = 0;
 		for(int i = 0; i <n ;i++) {
 			if(th > arr[i][0]) {
 				int cnt = (th - arr[i][0] + 29) / 30;
