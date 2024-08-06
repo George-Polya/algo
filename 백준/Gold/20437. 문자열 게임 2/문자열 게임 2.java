@@ -11,20 +11,15 @@ public class Main {
 	
 	static void solve(int idx) {
 		List<Integer> list = alpha[idx];
-		int left = 0;
-		int right = 0;
+	
 		int size = list.size();
-		while(right < size) {
-			if(right - left + 1 == k) {
-				int len = list.get(right) - list.get(left) + 1;
-				min = Math.min(min, len);
-				max = Math.max(max, len);
-			}
-			
-			right++;
-			while(right - left + 1 > k) {
-				left++;
-			}
+		if(size < k)
+			return;
+		
+		for(int i = 0; i <= size - k; i++) {
+			int len = list.get(i + k - 1) - list.get(i) + 1;
+			max = Math.max(max, len);
+			min = Math.min(min, len);
 		}
 	}
 	
