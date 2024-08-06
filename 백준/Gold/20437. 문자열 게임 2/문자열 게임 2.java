@@ -4,47 +4,60 @@ import java.io.*;
 public class Main {
 	static int T;
 	static StringBuilder sb = new StringBuilder();
+	static List<Integer> alpha[] = new ArrayList[26];
+	static int min, max;
+	static String str;
+	static int k;
+	
+	static void solve(int idx) {
+		List<Integer> list = alpha[idx];
+		int left = 0;
+		int right = 0;
+		int size = list.size();
+		while(right < size) {
+			if(right - left + 1 == k) {
+				int len = list.get(right) - list.get(left) + 1;
+				min = Math.min(min, len);
+				max = Math.max(max, len);
+			}
+			
+			right++;
+			while(right - left + 1 > k) {
+				left++;
+			}
+		}
+	}
 	
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		T = Integer.parseInt(br.readLine());
 		for(int tc=1;tc<=T;tc++) {
-			String str = br.readLine();
-			int k = Integer.parseInt(br.readLine());
-			if(k == 1) {
-				sb.append("1 1").append('\n');
-				continue;
+			str = br.readLine();
+			k = Integer.parseInt(br.readLine());
+			
+			
+			for(int i = 0; i < 26;i++) {
+				alpha[i] = new ArrayList<>();
 			}
 			
-			int count[] = new int[26];
+			min = 10001;
+			max = -1;
 			int n = str.length();
-			for(int i =0; i < n ;i++) {
-				count[str.charAt(i) - 'a']++;
+			for(int i = 0; i < n;i++) {
+				char ch = str.charAt(i);
+				
+				alpha[ch - 'a'].add(i);
 			}
 			
-			int min = Integer.MAX_VALUE;
-			int max = -1;
-			
-			for(int i = 0; i < n ;i++) {
-				if(count[str.charAt(i) - 'a'] < k)
-					continue;
-				int cnt = 1;
-				for(int j = i + 1; j < n; j++) {
-					if(str.charAt(i) == str.charAt(j))
-						cnt++;
-					if(cnt == k) {
-						min = Math.min( min, j - i  + 1);
-						max = Math.max(max, j -i + 1);
-						break;
-					}
-				}
+			for(int i = 0; i < 26;i++) {
+//				System.out.printf("%c: %s\n", (char)(i + 'a'), alpha[i]);
+				solve(i);
 			}
 			
-			if(min == Integer.MAX_VALUE || max == -1)
-				sb.append("-1\n");
+			if(min == 10001)
+				sb.append(-1).append('\n');
 			else
 				sb.append(min).append(' ').append(max).append('\n');
-			
 		}
 		System.out.println(sb);
 	}
