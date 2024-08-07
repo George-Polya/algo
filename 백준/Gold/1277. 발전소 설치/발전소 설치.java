@@ -100,38 +100,58 @@ public class Main {
 			costs[to][from] = 0;
 		}
 		
-		for(int from =1; from<=n; from++) {
-			for(int to = 1; to<=n; to++) {
-				if(from == to)
-					continue;
-				adj[from].add(new Node(to, costs[from][to]));
-//				adj[to].add(new Node(from, costs[to][from]));
-			}
-		}
 		
-		PriorityQueue<Node> pq = new PriorityQueue<>();
 		double dist[] = new double[n+1];
 		Arrays.fill(dist, INF);
 
 		dist[1] = 0;
-		pq.add(new Node(1,dist[1]));
+		boolean visited[] = new boolean[n+1];
 		
-		while(!pq.isEmpty()) {
-//			System.out.println("----");
-//			System.out.println("pq: "+pq);
-//			System.out.println("dist: "+printDist(dist));
-			Node cur = pq.poll();
+		for(int i =1; i<=n; i++) {
+			int minIndex = -1;
 			
-			if(dist[cur.id] < cur.cost)
-				continue;
-			
-			for(Node nxt : adj[cur.id]) {
-				if(nxt.cost <= m && dist[nxt.id] > dist[cur.id] + nxt.cost) {
-					dist[nxt.id] = dist[cur.id] + nxt.cost;
-					pq.add(new Node(nxt.id, dist[nxt.id]));
-				}
+			for(int j = 1; j<=n; j++) {
+				if(visited[j])
+					continue;
+				
+				if(minIndex == -1 || dist[minIndex] > dist[j])
+					minIndex = j;
 			}
+			
+			visited[minIndex] = true;
+			
+			for(int j = 1; j<=n; j++) {
+				if(costs[minIndex][j] == INF || costs[minIndex][j] > m)
+					continue;
+				dist[j] = Math.min(dist[j], dist[minIndex] + costs[minIndex][j]);
+			}
+			
 		}
+		
+		
+//		PriorityQueue<Node> pq = new PriorityQueue<>();
+//		pq.add(new Node(1,dist[1]));
+//		for(int from =1; from<=n; from++) {
+//			for(int to = 1; to<=n; to++) {
+//				if(from == to)
+//					continue;
+//				adj[from].add(new Node(to, costs[from][to]));
+//			}
+//		}
+//		
+//		while(!pq.isEmpty()) {
+//			Node cur = pq.poll();
+//			
+//			if(dist[cur.id] < cur.cost)
+//				continue;
+//			
+//			for(Node nxt : adj[cur.id]) {
+//				if(nxt.cost <= m && dist[nxt.id] > dist[cur.id] + nxt.cost) {
+//					dist[nxt.id] = dist[cur.id] + nxt.cost;
+//					pq.add(new Node(nxt.id, dist[nxt.id]));
+//				}
+//			}
+//		}
 		
 		System.out.println((long)(dist[n] * 1000));
 		
