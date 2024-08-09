@@ -6,42 +6,18 @@ public class Main {
 	static StringTokenizer st;
 	static int n,m;
 	static char gender[];
-	static class Edge implements Comparable<Edge>{
-		int u, v, cost;
-		public Edge(int u, int v, int cost) {
-			this.u = u;
-			this.v = v;
+	static class Node implements Comparable<Node>{
+		int id, cost;
+		public Node(int id, int cost) {
+			this.id = id;
 			this.cost = cost;
 		}
-		
-		public int compareTo(Edge e) {
-			return cost - e.cost;
-		}
-		
-		public String toString(){
-			return u +" "+v+" "+cost;
+		public int compareTo(Node n) {
+			return cost - n.cost;
 		}
 	}
-	
-	static Edge edges[];
-	static int uf[];
-	
-	static int find(int x) {
-		if( x == uf[x])
-			return x;
-		
-		return uf[x] = find(uf[x]);
-	}
-	
-	static boolean union(int a, int b) {
-		a = find(a);
-		b = find(b);
-		
-		if(a == b)
-			return false;
-		uf[b] = a;
-		return true;
-	}
+	static List<Node> adj[];
+	static boolean visited[];
 	
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -51,49 +27,45 @@ public class Main {
 		gender = new char[n+1];
 		
 		st = new StringTokenizer(br.readLine());
-		uf = new int[n+1];
 		for(int i = 1; i<=n ;i++) {
 			gender[i] = st.nextToken().charAt(0);
-			uf[i] = i;
 		}
 		
-		edges = new Edge[m];
-		
-		for(int i = 0; i <m;i++) {
-			st = new StringTokenizer(br.readLine());
-			int u = Integer.parseInt(st.nextToken());
-			int v = Integer.parseInt(st.nextToken());
-			int cost = Integer.parseInt(st.nextToken());
-			edges[i] = new Edge(u,v,cost);
+		adj = new List[n+1];
+		for(int i = 1; i<=n; i++) {
+			adj[i] = new ArrayList<>();
 		}
-		
-		Arrays.sort(edges);
-		
-//		for(int i = 0; i<m;i++) {
-//			System.out.println(edges[i]);
-//		}
-		
-		int size = 0;
-		int sum = 0;
 		
 		for(int i = 0; i < m ;i++) {
-			Edge e = edges[i];
-			
-			int u = e.u;
-			int v = e.v;
-			int cost = e.cost;
-			if(gender[u] == gender[v])
-				continue;
-			if(union(u,v)) {
-//				System.out.println(e);
-				sum += cost;
-				size++;
-			}
-			
-			if(size == n - 1)
-				break;
+			st = new StringTokenizer(br.readLine());
+			int from = Integer.parseInt(st.nextToken());
+			int to = Integer.parseInt(st.nextToken());
+			int cost = Integer.parseInt(st.nextToken());
+			adj[from].add(new Node(to, cost));
+			adj[to].add(new Node(from, cost));
 		}
-//		System.out.println(sum);
-		System.out.println(size == n-1 ? sum : -1);
+		
+		int sum = 0;
+		int size = 0;
+		visited = new boolean[n+1];
+		
+		PriorityQueue<Node> pq = new PriorityQueue<>();
+		pq.add(new Node(1,0));
+//		visited[1] = true;
+		
+		while(!pq.isEmpty()) {
+			Node cur = pq.poll();
+			if(visited[cur.id])
+				continue;
+			visited[cur.id] = true;
+			sum += cur.cost;
+			size++;
+			for(Node nxt : adj[cur.id]) {
+				if(gender[nxt.id] == gender[cur.id] || visited[nxt.id])
+					continue;
+				pq.add(nxt);
+			}
+		}
+		System.out.println(size == n ? sum : -1);
 	}
 }
