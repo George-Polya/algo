@@ -20,19 +20,15 @@ public class Main {
 		if(A == B)
 			return;
 		
-		uf[A] = B;
+//		uf[A] = B;
+		uf[B] = A;
+		arr[A] = Math.min(arr[A], arr[B]);
+		arr[B] = 0;
 		
 		
 	}
 	
-	static int getMinCost(HashSet<Integer> set) {
-		int ret = Integer.MAX_VALUE;
-//		System.out.println(set);
-		for(int id : set) {
-			ret = Math.min(ret, arr[id]);
-		}
-		return ret;
-	}
+	
 	
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -59,31 +55,10 @@ public class Main {
 		}
 //			System.out.println(Arrays.toString(uf));
 		
-		Set<Integer> set = new HashSet<>();
-		for(int i = 1; i<=n; i++) {
-			int idx = find(i);
-//			System.out.println(idx);
-			set.add(idx);
-		}
-		
-		HashMap<Integer, HashSet<Integer>> map = new HashMap<>();
-//		System.out.println(set);
-		for(int idx : set) {
-			map.put(idx, new HashSet<>());
-		}
-		
-		for(int i = 1; i<=n; i++) {
-			int idx = find(i);
-			map.get(idx).add(i);
-		}
-		
-		long sum = 0;
-		for(int idx : map.keySet()) {
-			int min = getMinCost(map.get(idx));
-			
-			sum += min;
-		}
-		System.out.println(sum <= k ? sum : "Oh no");
+		long ans = 0;
+		for(int i = 1; i<=n; i++)
+			ans += arr[i];
+		System.out.println(ans <= k ? ans : "Oh no");
 		
 	}
 }
