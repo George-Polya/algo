@@ -17,7 +17,7 @@ public class Main {
 	static int n;
 	static Stack<Integer> stk = new Stack<>();
 	static List<Pair> list = new ArrayList<>();
-	static Set<String> temp = new HashSet<>();
+	static List<String> temp = new ArrayList<>();
 	
 	static String remove(int idx, String temp) {
 		String ret = "";
@@ -32,10 +32,11 @@ public class Main {
 	}
 	
 	static void solve(int cur, String str) {
-//		System.out.printf("%d: %s\n", cur, str);
-		temp.add(str);
-		if(cur == list.size())
+		if(cur == list.size()) {
+			temp.add(str);
+//			System.out.printf("%d: %s\n", cur, str);
 			return;
+		}
 		
 		// cur에 해당하는거 제거 
 		String str2 = remove(cur, str);
@@ -72,12 +73,11 @@ public class Main {
 		}
 		
 		solve(0, str);
-		temp.remove(str);
-//		System.out.println(result);
+//		System.out.println(temp);
 		TreeSet<String> result = new TreeSet<>();
-		for(String str : temp) {
+		for(int i = 0; i < temp.size() - 1;i++) {
+			String str = temp.get(i);
 			String ret = make(str);
-//			System.out.println(ret);
 			result.add(ret);
 		}
 		
