@@ -5,6 +5,65 @@ public class Main {
 	static int n;
 	static int arr[];
 	static StringTokenizer st;
+	static int counts[];
+	static int INT_MAX = Integer.MAX_VALUE;
+	static int INT_MIN = Integer.MIN_VALUE;
+	static int dfs(int root) {
+		
+		int left = nodes[root].left;
+		int right = nodes[root].right;
+		
+		
+		counts[root] = 1;
+		if(left == -1 && right == -1) {
+			return counts[root];
+		}
+		
+		if(left != -1) {
+			counts[root] += dfs(left);
+		}
+		
+		if(right != -1) {
+			counts[root] += dfs(right);
+		}
+		
+		return counts[root];
+		
+	}
+	static int depthMin[], depthMax[];
+	static int maxDepth = 0;
+	static void dfs(int root, int depth, int L, int R) {
+		maxDepth = Math.max(maxDepth, depth);
+		if(root == -1)
+			return;
+		if(L == R) {
+			depthMin[depth] = Math.min(depthMin[depth], L);
+			depthMax[depth] = Math.max(depthMax[depth], R);
+			return;
+		}
+		
+		int left = nodes[root].left;
+		int right = nodes[root].right;
+		
+		
+		int leftCnt = 0;
+		int rightCnt = 0;
+		if(left != -1) {
+			leftCnt = counts[left];
+		}
+		
+		if(right != -1) {
+			rightCnt = counts[right];
+		}
+			
+		int leftR = L + leftCnt - 1;
+		int x = leftR + 1;
+		depthMin[depth] = Math.min(depthMin[depth], x);
+		depthMax[depth] = Math.max(depthMax[depth], x);
+		int rightL = R - rightCnt + 1;
+		dfs(left, depth+1, L, leftR);
+		dfs(right,depth+1, rightL, R);
+	}
 	
 	static class Node{
 		int parent, left, right;
@@ -13,43 +72,24 @@ public class Main {
 			this.left = left;
 			this.right = right;
 		}
-		
-		public String toString() {
-			return parent +" "+left+" "+right;
-		}
 	}
 	
 	static Node nodes[];
-	static int levelMin[], levelMax[];
-	static int maxLevel = 0;
-	static int x = 1;
-	static void inOrder(int cur, int level) {
-		Node root = nodes[cur];
-		if(maxLevel < level)
-			maxLevel = level;
-		
-		if(root.left != -1)
-			inOrder(root.left, level+1);
-		
-		levelMin[level] = Math.min(levelMin[level], x);
-		levelMax[level] = x;
-		x++;
-		
-		if(root.right != -1)
-			inOrder(root.right, level + 1);
-		
-	}
 	
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
+        arr = new int[2 * n + 2];
+        counts = new int[n+1];
+        depthMin = new int[n+1];
+        depthMax = new int[n+1];
+        Arrays.fill(depthMin, INT_MAX);
+        Arrays.fill(depthMax, INT_MIN);
         nodes = new Node[n+1];
-        levelMin = new int[n+1];
-        levelMax = new int[n+1];
-        Arrays.fill(levelMin, Integer.MAX_VALUE);
-        for(int i = 0 ;i <=n;i++) {
+        for(int i = 1; i<=n; i++) {
         	nodes[i] = new Node(-1,-1,-1);
         }
+        
         for(int i = 0; i < n;i++) {
         	st = new StringTokenizer(br.readLine());
         	int root = Integer.parseInt(st.nextToken());
@@ -57,7 +97,6 @@ public class Main {
         	int right = Integer.parseInt(st.nextToken());
         	nodes[root].left = left;
         	nodes[root].right = right;
-        	
         	if(nodes[root].left != -1)
         		nodes[left].parent = root;
         	if(nodes[root].right != -1)
@@ -65,24 +104,28 @@ public class Main {
         }
         
         int root = -1;
-        for(int i = 1; i<=n;i++) {
+        for(int i = 1 ;i<=n;i++) {
         	if(nodes[i].parent == -1) {
         		root = i;
         		break;
         	}
         }
         
-        inOrder(root, 1);
+        dfs(root);
+        dfs(root, 1, 1, n);
         
         int y = 1;
-        int ans = levelMax[y] - levelMin[y] + 1;
-        for(int i = 2; i<=maxLevel;i++) {
-        	int width = levelMax[i] - levelMin[i] + 1;
+        int ans = depthMax[y] - depthMin[y] + 1;
+        for(int i = 1; i<=n; i++) {
+        	if(depthMin[i] == INT_MAX || depthMax[i] == INT_MIN )
+        		continue;
+        	int width = depthMax[i] - depthMin[i] + 1;
         	if(ans < width) {
         		ans = width;
         		y = i;
         	}
         }
-        System.out.println(y+" "+ans);
+        System.out.println(y + " "+ans);
+        
     }
 }
