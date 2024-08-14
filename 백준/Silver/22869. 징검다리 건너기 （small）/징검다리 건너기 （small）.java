@@ -25,13 +25,11 @@ public class Main {
         dp = new boolean[n+1];
         dp[1] = true;
         for(int i = 2; i<=n; i++) {
-        	boolean flag = false;
         	for(int c = 1; c<i; c++) {
         		if(!dp[c])
         			continue;
-        		flag |= dp[c] && calc(i,c) <= k;
+        		dp[i] |= dp[c] && calc(i,c) <= k;
          	}
-        	dp[i] = flag;
         }
         
 //        System.out.println(Arrays.toString(dp));
