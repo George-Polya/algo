@@ -3,52 +3,48 @@ import java.util.*;
 
 public class Main {
 	static StringTokenizer st;
-	static class SnowMan implements Comparable<SnowMan>{
-		int hIdx, bIdx, height;
-		
-		public SnowMan(int hIdx, int bIdx, int height) {
-			this.hIdx = hIdx;
-			this.bIdx = bIdx;
-			this.height = height;
-		}
-		
-		public int compareTo(SnowMan man) {
-			return height - man.height;
-		}
-	}
-	
-	static int snow[];
+	static int arr[];
 	static int n;
-	static ArrayList<SnowMan> snowMans = new ArrayList<>();
+	static int ans = Integer.MAX_VALUE;
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		n = Integer.parseInt(br.readLine());
-		snow = new int[n];
+		arr = new int[n];
 		st = new StringTokenizer(br.readLine());
 		for(int i = 0; i < n ;i++) {
-			snow[i] = Integer.parseInt(st.nextToken());
+			arr[i] = Integer.parseInt(st.nextToken());
 		}
 		
-		for(int i = 0; i < n;i++) {
+		Arrays.sort(arr);
+		
+		for(int i = 0; i < n ;i++) {
 			for(int j = i + 1; j < n ; j++) {
-				snowMans.add(new SnowMan(i,j, snow[i] + snow[j]));
-			}
-		}
-		
-		Collections.sort(snowMans);
-		int ans = Integer.MAX_VALUE;
-		for(int i = 0 ; i < snowMans.size() - 1; i++) {
-			SnowMan man1 = snowMans.get(i);
-			SnowMan man2 = snowMans.get(i+1);
-			
-			int snow1 = man1.bIdx;
-			int snow2 = man1.hIdx;
-			
-			int snow3 = man2.bIdx;
-			int snow4 = man2.hIdx;
-			
-			if(snow1 != snow3 && snow1 != snow4 && snow2 != snow3 && snow2 != snow4) {
-				ans = Math.min(ans, man2.height - man1.height);
+				int sum1 = arr[i] + arr[j];
+				
+				int L = 0 ;
+				int R = n - 1;
+				
+				while(L < R) {
+					if(i == L || i == R) {
+						L++;
+						continue;
+					}
+					if(j == L || j == R) {
+						R--;
+						continue;
+					}
+					
+					int sum2 = arr[L] + arr[R];
+					ans = Math.min(ans, Math.abs(sum2 - sum1));
+					if(sum1 > sum2) {
+						L++;
+					}else if(sum1 < sum2) {
+						R--;
+					}else {
+						System.out.println(0);
+						System.exit(0);
+					}
+				}
 			}
 		}
 		
