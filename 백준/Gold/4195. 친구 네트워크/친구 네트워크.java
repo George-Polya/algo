@@ -7,30 +7,41 @@ public class Main {
 		T = Integer.parseInt(br.readLine());
 		StringBuilder sb = new StringBuilder();
 		for(int tc=1;tc<= T; tc++) {
-			uf = new HashMap<>();
-			counts = new HashMap<>();
 			F = Integer.parseInt(br.readLine());
 			String temps[][] = new String[F][2];
+			
+			str2Code = new HashMap<>();
+			int idx = 1;
 			for(int i = 0; i <F; i++) {
 				st = new StringTokenizer(br.readLine());
 				String s1 = st.nextToken();
 				String s2 = st.nextToken();
 				temps[i][0] = s1;
 				temps[i][1] = s2;
-				uf.put(s1, s1);
-				uf.put(s2, s2);
-				counts.put(s1, 1);
-				counts.put(s2, 1);
+				if(!str2Code.containsKey(s1))
+					str2Code.put(s1, idx++);
+				if(!str2Code.containsKey(s2))
+					str2Code.put(s2, idx++);
 			}
+			
+			n = str2Code.size();
+			uf = new int[n+1];
+			counts = new int[n+1];
+			for(int i = 1; i<=n; i++) {
+				uf[i] = i;
+				counts[i] = 1;
+			}
+			
 			
 			for(int i = 0; i < F; i++) {
 				String s1 = temps[i][0];
 				String s2 = temps[i][1];
+				int code1 = str2Code.get(s1);
+				int code2 = str2Code.get(s2);
 				
-				union(s1,s2);
-				s1 = find(s1);
-//				System.out.println(counts.get(s1));
-				sb.append(counts.get(s1)).append('\n');
+				union(code1, code2);
+				code1 = find(code1);
+				sb.append(counts[code1]).append('\n');
 			}
 			
 			
@@ -38,27 +49,27 @@ public class Main {
 		System.out.println(sb);
 	}
 	
-	static int T,F;
+	static int T,F,n;
 	static StringTokenizer st;
-	static Map<String, String> uf;
-	static Map<String, Integer> counts;
+	static Map<String, Integer> str2Code; 
+	static int uf[], counts[];
 	
-	static String find(String x) {
-		if(x.equals(uf.get(x)))
+	static int find(int x) {
+		if(x == uf[x])
 			return x;
 		
-		uf.put(x, find(uf.get(x)));
-		return uf.get(x);
+		return uf[x] = find(uf[x]);
 	}
 	
-	static void union(String x, String y) {
+	static void union(int x,int y) {
 		x = find(x);
 		y = find(y);
-//		System.out.printf("%s %s\n", x,y);
-		if(x.equals(y))
+		if(x == y)
 			return;
-		uf.put(x, y);
-		counts.put(y, counts.get(y) + counts.get(x));
+		
+		uf[x] = y;
+		counts[y] += counts[x];
+		
 	}
 	
 }
