@@ -13,8 +13,8 @@ public class Main {
 			st = new StringTokenizer(br.readLine());
 			for(int x=1; x<=w; x++) {
 				board[y][x] = Integer.parseInt(st.nextToken());
-				if(board[y][x] == 1)
-					visited[y][x] = true;
+//				if(board[y][x] == 1)
+//					visited[y][x] = true;
 			}
 		}
 		
