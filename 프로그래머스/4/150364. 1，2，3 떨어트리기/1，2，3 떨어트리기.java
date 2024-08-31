@@ -1,11 +1,32 @@
 import java.util.*;
 class Solution {
-      static ArrayList<Integer>[] adj;
+     
+    static ArrayList<Integer>[] adj;
     static int n;
-    static int scores[];
-    public static int[] solution(int[][] edges, int[] target) {
-        int[] answer = {};
-        n = edges.length + 1;
+    static int scores[], counts[], target[], pass[];
+    static int leafCnt;
+    static Set<Integer> done = new HashSet<>();
+    static List<Integer> leafs = new ArrayList<>();
+    
+    static int dfs(int cur) {
+    	if(adj[cur].isEmpty()) {
+    		counts[cur]++;
+    		
+    		if(counts[cur] * 3 >= target[cur]) {
+    			done.add(cur);
+    		}
+    		
+    		leafs.add(cur);
+    		return counts[cur] <= target[cur] ? cur : -1;
+    	}
+    	
+    	int path = pass[cur]++ % adj[cur].size();
+    	return dfs(adj[cur].get(path));
+    }
+    
+    public static int[] solution(int[][] edges, int[] _target) {
+        target = _target;
+        n = target.length;
         adj = new ArrayList[n];
         for(int i = 0; i<n; i++){
             adj[i] = new ArrayList<>();
@@ -22,38 +43,25 @@ class Solution {
         	Collections.sort(adj[i]);
         }
         
-        int counts[] = new int[n];
-        int passCnt[] = new int[n];
-        boolean checked[] = new boolean[n];
-        List<Integer> leafs = new ArrayList<>();
-        int T = 0;
         
         for(int i = 0; i < n;i++) {
-        	if(adj[i].isEmpty() && target[i] > 0)
-        		T++;
+        	if(target[i] > 0)
+        		leafCnt++;
         }
         
-        while(T > 0) {
-        	int cur = 0;
-        	
-        	while(adj[cur].size() > 0) {
-        		cur = adj[cur].get(passCnt[cur]++ % adj[cur].size());
-        	}
-        	
-        	counts[cur]++;
-        	leafs.add(cur);
-        	
-        	if(counts[cur] > target[cur]) {
-        		return new int[]{-1};
-        	}
-        	
-        	if(!checked[cur] && target[cur] <= 3 * counts[cur]) {
-        		checked[cur] = true;
-        		T--;
-        	}
+        counts = new int[n];
+        pass = new int[n];
+        
+        while(true) {
+        	if(dfs(0) == -1)
+        		return new int[] {-1};
+        	if(done.size() == leafCnt)
+        		break;
         }
+        
         
         List<Integer> result = new ArrayList<>();
+        
         
         for(int leaf : leafs) {
         	counts[leaf]--;
@@ -72,5 +80,6 @@ class Solution {
         
         
         return result.stream().mapToInt(r->r).toArray();
+//        return new int[]{};
     }
 }
