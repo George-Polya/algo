@@ -32,20 +32,34 @@ public class Main {
         	}
         }
         
+//        System.out.println(Arrays.toString(dp));
+        
+//        int ans = -1;
+//        for(int i = 0; i<= total;i++) {
+//        	if(dp[i] >= M) {
+//        		ans = i;
+//        		break;
+//        	}
+//        }
+        
+        int l = 0;
+        int r = total;
         int ans = -1;
-        for(int i = 0; i<= total;i++) {
-        	if(dp[i] >= M) {
-        		ans = i;
-        		break;
+        while(l<=r) {
+        	int mid = (l + r) / 2;
+        	
+        	if(M <= dp[mid]) {
+        		r = mid - 1;
+        		ans = mid;
+        	}else {
+        		l = mid + 1;
         	}
         }
         
         System.out.println(ans);
     }
     static int N,M;
-    static int MAX_M = (int)1e7;
     static StringTokenizer st;
     static int arr[], costs[], dp[];
-    static int INF = Integer.MAX_VALUE / 2;
 
 }
