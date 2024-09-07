@@ -1,47 +1,51 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-    static int n;
-    static final int MXN = 4000002;
-    static boolean[] state = new boolean[MXN];
-    static ArrayList<Integer> primes = new ArrayList<>();
-
+	static int n;
+	
+	static List<Integer> getPrimes(int n){
+		List<Integer> ret = new ArrayList<>();
+		
+		boolean states[] = new boolean[n+1];
+		Arrays.fill(states, true);
+		
+		for(int i = 2; i * i <=n;i++) {
+			if(!states[i])
+				continue;
+			for(int j = i * i ; j<=n; j+=i)
+				states[j] = false;
+		}
+		
+		for(int i = 2; i<=n; i++) {
+			if(states[i])
+				ret.add(i);
+		}
+		
+		return ret;
+	}
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
-
-        Arrays.fill(state, true);
-
-        for (int i = 2; i * i < MXN; i++) {
-            if (!state[i]) continue;
-            for (int j = i * i; j < MXN; j += i)
-                state[j] = false;
+        List<Integer> primes = getPrimes(n);
+//        System.out.println(primes);
+        
+        int r = 0;
+        int size = primes.size();
+//        System.out.println(primes.get(size-1));
+        int sum = 0;
+        int cnt = 0;
+        for(int l = 0; l < size;l++) {
+        	while(r < size && sum < n) {
+        		sum += primes.get(r);
+        		r++;
+        	}
+        	
+        	if(sum == n)
+        		cnt++;
+        	
+        	sum -= primes.get(l);
         }
-
-        for (int i = 2; i < MXN; i++)
-            if (state[i])
-                primes.add(i);
-
-        Collections.reverse(primes);
-        primes.add(0);
-
-        int st = 0, en = 1, cnt = 0, sum = primes.get(0);
-        while (true) {
-            if (sum == n)
-                cnt += 1;
-            if (sum <= n) {
-                sum += primes.get(en);
-                en += 1;
-            }
-            if (sum > n) {
-                sum -= primes.get(st);
-                st += 1;
-            }
-            if (en == primes.size())
-                break;
-        }
-
         System.out.println(cnt);
     }
 }
