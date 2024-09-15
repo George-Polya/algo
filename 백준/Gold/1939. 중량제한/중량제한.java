@@ -1,75 +1,77 @@
+import java.io.*;
 import java.util.*;
 
-class Main {
-    static class Node {
-        int to;
-        int weight;
+public class Main {
+    static int N, M;
+    static List<Edge>[] adj;
+    static int start, end;
+    static long maxWeight = 0;
 
-        Node(int to, int weight) {
+    static class Edge {
+        int to;
+        long weight;
+
+        Edge(int to, long weight){
             this.to = to;
             this.weight = weight;
         }
     }
 
-    static int N, M;
-    static ArrayList<Node>[] adj;
-    static boolean[] visited;
+    public static void main(String[] args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        N = sc.nextInt();  // 섬의 개수
-        M = sc.nextInt();  // 다리의 개수
+        adj = new ArrayList[N+1];
+        for(int i=1;i<=N;i++) adj[i] = new ArrayList<>();
 
-        adj = new ArrayList[N + 1];
-        for (int i = 1; i <= N; i++) {
-            adj[i] = new ArrayList<>();
+        for(int i=0;i<M;i++){
+            st = new StringTokenizer(br.readLine());
+            int A = Integer.parseInt(st.nextToken());
+            int B = Integer.parseInt(st.nextToken());
+            long C = Long.parseLong(st.nextToken());
+            adj[A].add(new Edge(B, C));
+            adj[B].add(new Edge(A, C));
+            if(C > maxWeight) maxWeight = C;
         }
 
-        int start = 0, end = 0;
+        st = new StringTokenizer(br.readLine());
+        start = Integer.parseInt(st.nextToken());
+        end = Integer.parseInt(st.nextToken());
 
-        // 간선 정보 입력
-        for (int i = 0; i < M; i++) {
-            int u = sc.nextInt();
-            int v = sc.nextInt();
-            int w = sc.nextInt();
-            adj[u].add(new Node(v, w));
-            adj[v].add(new Node(u, w));
-            end = Math.max(end, w);  // 최대 중량을 end로 설정
-        }
+        long left = 1;
+        long right = maxWeight;
+        long result = 0;
 
-        int from = sc.nextInt();  // 출발 섬
-        int to = sc.nextInt();    // 도착 섬
-
-        // 이분 탐색
-        while (start <= end) {
-            int mid = (start + end) / 2;
-            if (canCross(from, to, mid)) {
-                start = mid + 1;  // 가능한 경우 더 큰 중량도 가능한지 탐색
-            } else {
-                end = mid - 1;    // 불가능한 경우 더 작은 중량으로 탐색
+        while(left <= right){
+            long mid = left + (right - left) / 2;
+            if(canTransport(mid)){
+                result = mid;
+                left = mid + 1;
+            }
+            else{
+                right = mid -1;
             }
         }
 
-        System.out.println(end);  // 가능한 최대 중량 출력
+        System.out.println(result);
     }
 
-    // BFS로 특정 중량을 기준으로 다리를 건널 수 있는지 확인
-    static boolean canCross(int from, int to, int limit) {
+    static boolean canTransport(long weight){
+        boolean[] visited = new boolean[N+1];
         Queue<Integer> queue = new LinkedList<>();
-        visited = new boolean[N + 1];
-        queue.add(from);
-        visited[from] = true;
+        queue.add(start);
+        visited[start] = true;
 
-        while (!queue.isEmpty()) {
-            int curr = queue.poll();
-
-            if (curr == to) return true;  // 도착 섬에 도달한 경우
-
-            for (Node next : adj[curr]) {
-                if (!visited[next.to] && next.weight >= limit) {
-                    visited[next.to] = true;
-                    queue.add(next.to);
+        while(!queue.isEmpty()){
+            int current = queue.poll();
+            if(current == end) return true;
+            for(Edge edge : adj[current]){
+                if(!visited[edge.to] && edge.weight >= weight){
+                    visited[edge.to] = true;
+                    queue.add(edge.to);
                 }
             }
         }
