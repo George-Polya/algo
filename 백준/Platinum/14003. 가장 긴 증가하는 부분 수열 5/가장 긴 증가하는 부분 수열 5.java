@@ -1,72 +1,49 @@
 import java.io.*;
 import java.util.*;
+
 public class Main {
-	static int n;
-	static int arr[];
-	static StringTokenizer st;
-	static int c[];
-	static int INT_MAX = Integer.MAX_VALUE;
-	static int lowerBound(int target,int L, int R) {
-		int minIdx = n + 1;
-		
-		while(L<=R) {
-			int mid = (L+R) / 2;
-			if(target <= c[mid]) {
-				R = mid - 1;
-				minIdx = Math.min(minIdx, mid);
-			}else {
-				L = mid + 1;
-			}
-		}
-		return minIdx;
-	}
-	static int indexArr[];
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		n = Integer.parseInt(br.readLine());
-		arr = new int[n+1];
-		st = new StringTokenizer(br.readLine());
-		for(int i = 1; i<=n; i++)
-			arr[i] = Integer.parseInt(st.nextToken());
-		
-		c = new int[n+1];
-		Arrays.fill(c, INT_MAX);
-//		c[1] = arr[1];
-		indexArr = new int[n+1];
-		int length = 1;
-		
-		for(int i = 1; i<=n; i++) {
-			int target = arr[i];
-			
-			if(c[length] < target) {
-				length++;
-				c[length] = target;
-				indexArr[i] = length;
-			}else {
-				int minIdx = lowerBound(target, 1, length + 1);
-				
-				c[minIdx] = target;
-				indexArr[i] = minIdx;
-			}
-		}
-		StringBuilder sb = new StringBuilder();
-		sb.append(length).append('\n');
-
-		int idx = length;
-		Stack<Integer> stk = new Stack<>();
-		for(int i = n; i>0;i--) {
-			if(indexArr[i] == idx) {
-				idx--;
-				stk.push(arr[i]);
-			}
-		}
-		
-		while(!stk.isEmpty()) {
-			sb.append(stk.pop()).append(' ');
-		}
-		
-		
-		System.out.println(sb);
-	}
-
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        // 입력 받기
+        int N = Integer.parseInt(br.readLine());
+        int[] arr = new int[N];
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+        
+        // LIS 알고리즘 적용
+        int[] dp = new int[N];  // 각 위치에서의 LIS 길이
+        int[] lis = new int[N]; // LIS를 구성하는 수들
+        int[] idx = new int[N]; // lis 배열에서의 인덱스 추적
+        int len = 0;
+        
+        Arrays.fill(dp, -1);
+        
+        for (int i = 0; i < N; i++) {
+            int pos = Arrays.binarySearch(lis, 0, len, arr[i]);
+            if (pos < 0) pos = -pos - 1;
+            lis[pos] = arr[i];
+            dp[i] = pos;
+            if (pos == len) len++;
+        }
+        
+        // 부분 수열 복원
+        int[] result = new int[len];
+        int idxToFind = len - 1;
+        for (int i = N - 1; i >= 0; i--) {
+            if (dp[i] == idxToFind) {
+                result[idxToFind] = arr[i];
+                idxToFind--;
+            }
+        }
+        
+        // 결과 출력
+        StringBuilder sb = new StringBuilder();
+        sb.append(len).append('\n');
+        for (int i = 0; i < len; i++) {
+            sb.append(result[i]).append(' ');
+        }
+        System.out.println(sb.toString());
+    }
 }
