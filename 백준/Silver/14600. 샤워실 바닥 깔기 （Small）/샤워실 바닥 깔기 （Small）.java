@@ -8,61 +8,41 @@ public class Main {
 	static int board[][];
 	static int cnt;
 	
-	static boolean check(int sy,int sx, int size) {
-		for(int y = sy; y <= sy + size -1; y++) {
-			for(int x= sx; x<=sx + size - 1; x++) {
-				if(board[y][x] != 0)
-					return false;
-			}
-		}
-		return true;
-	}
-	
-	static void solve(int y,int x,int size) {
-		cnt++;
-		int half = size / 2;
-		
-		if(check(y,x,half))
-			board[y+half-1][x+half-1] = cnt;
-		
-		if(check(y,x+half,half))
-			board[y+half-1][x+half] = cnt;
-		
-		if(check(y+half, x, half))
-			board[y+half][x+half-1] = cnt;
-		
-		if(check(y+half, x+half, half))
-			board[y+half][x+half] = cnt;
-		
-		if(size == 2)
-			return;
-		
-		solve(y,x,half);
-		solve(y,x+half,half);
-		solve(y+half, x,half);
-		solve(y+half,x+half,half);
-	}
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		k = Integer.parseInt(br.readLine());
 		n = (1 << k);
 		st = new StringTokenizer(br.readLine());
-		ey = Integer.parseInt(st.nextToken());
-		ex = Integer.parseInt(st.nextToken());
+		ey = Integer.parseInt(st.nextToken()) - 1;
+		ex = Integer.parseInt(st.nextToken()) - 1;
 		
-		board = new int[n+1][n+1];
-		board[ey][ex] = -1;
 		
-		solve(1,1,n);
+		int board[][] = new int[][] {
+			{1,1,2,2},
+			{1,5,5,2},
+			{3,5,5,4},
+			{3,3,4,4}
+		};
 		
-		StringBuilder sb = new StringBuilder();
-		for(int x = n; x>=1; x--) {
-			for(int y = 1; y<=n; y++) {
-				sb.append(board[y][x]).append(' ');
-			}
-			sb.append('\n');
-		}
-		
-		System.out.println(sb);
+        if (ey < 2 && ex < 2) {
+            board[1][1] = 1;
+        } else if (ey < 2 && ex >= 2) {
+            board[1][2] = 2;
+        } else if (ey >= 2 && ex < 2) {
+            board[2][1] = 3;
+        } else {
+            board[2][2] = 4;
+        }
+        
+        board[ey][ex] = -1;
+        
+        StringBuilder sb = new StringBuilder();
+        
+        for(int x =n-1; x>=0; x--) {
+        	for(int y= 0; y < n; y++)
+        		sb.append(board[y][x]).append(' ');
+        	sb.append('\n');
+        }
+        System.out.println(sb);
 	}
 }
