@@ -8,27 +8,48 @@ public class Main {
         d = Integer.parseInt(st.nextToken());
         n = Integer.parseInt(st.nextToken());
         st = new StringTokenizer(br.readLine());
-        oven = new int[d+1];
-        for(int idx = 1; idx <= d; idx++) {
+        oven = new int[d];
+        for(int idx = 0; idx < d; idx++) {
         	int radius = Integer.parseInt(st.nextToken());
         	oven[idx] = Math.min(prev,  radius);
         	prev = oven[idx];
         	
         }
-        arr = new int[n+1];
+        arr = new int[n];
         st = new StringTokenizer(br.readLine());
-        for(int i = 1; i<=n; i++) {
+        for(int i = 0; i<n; i++) {
         	arr[i] = Integer.parseInt(st.nextToken());
         }
         
-        int last = d;
-        for(int i = 1; i<=n; i++) {
+        depth = d - 1;
+        for(int i = 0; i<n; i++) {
         	int cur = arr[i];
-        	while(last >=0 && cur > oven[last--]);
+        	
+        	int idx = lowerBound(cur, 1, depth);
+        	depth = idx - 1;
+        	min = Math.min(min, idx);
         }
-        System.out.println(last + 1);
+        
+        
+        
+        System.out.println(min+1);
     }
-    
+    static int depth;
+    static int min = Integer.MAX_VALUE;
+    static int lowerBound(int target, int l, int r) {
+    	int ret = -1;
+    	while(l<=r) {
+    		int mid = (l+r)/2;
+//    		System.out.printf("%d %d %d\n", l,r,mid);
+    		if(target <= oven[mid]) {
+    			l = mid + 1;
+    			ret = mid;
+    		}else {
+    			r = mid - 1;
+    		}
+    	}
+    	return ret;
+    }
     
     static int d,n;
     static StringTokenizer st;
