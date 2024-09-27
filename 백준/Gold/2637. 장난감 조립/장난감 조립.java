@@ -23,16 +23,12 @@ public class Main {
         	outDegree[from]++;
         }
         
-        based = new boolean[n+1];
         
         Queue<Integer> q = new ArrayDeque<>();
         counts = new int[n+1];
         q.add(n);
         counts[n] = 1;
-        for(int i = 1; i<=n; i++) {
-        	if(outDegree[i] == 0)
-        		based[i] = true;
-        }
+        
         
         while(!q.isEmpty()) {
 //        	System.out.println("----");
@@ -50,7 +46,7 @@ public class Main {
         }
         StringBuilder sb = new StringBuilder();
         for(int i = 1; i<=n; i++) {
-        	if(based[i]) {
+        	if(outDegree[i] == 0) {
         		sb.append(i).append(' ').append(counts[i]).append('\n');
         	}
         }
@@ -62,7 +58,6 @@ public class Main {
     static StringTokenizer st;
     static int counts[];
     static List<Edge> adj[];
-    static boolean based[];
     static class Edge{
     	int id, cost;
     	public Edge(int id, int cost) {
