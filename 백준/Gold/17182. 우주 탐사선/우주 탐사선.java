@@ -27,12 +27,12 @@ public class Main {
 //        printBoard(adj);
         used = new boolean[n];
         used[k] = true;
-        solve(k,0, 1 << k, new ArrayList<Integer>(List.of(k)));
+        solve(k,0, 1 << k);
         System.out.println(ans);
     }
     
     static boolean used[];
-    static void solve(int cur, int sum, int bit, ArrayList<Integer> list) {
+    static void solve(int cur, int sum, int bit) {
 //    	System.out.printf("cur: %d, bit: %d\n", cur, bit);
     	if(bit == (1<<n) - 1) {
 //    		System.out.printf("%s: %d\n", list, sum);
@@ -44,9 +44,7 @@ public class Main {
     		if(used[nxt])
     			continue;
     		used[nxt] = true;
-    		list.add(nxt);
-    		solve(nxt, sum + adj[cur][nxt], bit | (1<<nxt), list);
-    		list.remove(list.size() - 1);
+    		solve(nxt, sum + adj[cur][nxt], bit | (1<<nxt));
     		used[nxt] = false;
     	}
     }
