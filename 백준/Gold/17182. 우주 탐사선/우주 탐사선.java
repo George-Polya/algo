@@ -25,13 +25,13 @@ public class Main {
         }
         
 //        printBoard(adj);
-        used = new boolean[n];
-        used[k] = true;
+//        used = new boolean[n];
+//        used[k] = true;
         solve(k,0, 1 << k);
         System.out.println(ans);
     }
     
-    static boolean used[];
+//    static boolean used[];
     static void solve(int cur, int sum, int bit) {
 //    	System.out.printf("cur: %d, bit: %d\n", cur, bit);
     	if(bit == (1<<n) - 1) {
@@ -41,11 +41,14 @@ public class Main {
     	}
     	
     	for(int nxt = 0; nxt <n;nxt++) {
-    		if(used[nxt])
+//    		if(used[nxt])
+//    			continue;
+    		
+    		if( (bit & (1<<nxt))!=0 )
     			continue;
-    		used[nxt] = true;
+//    		used[nxt] = true;
     		solve(nxt, sum + adj[cur][nxt], bit | (1<<nxt));
-    		used[nxt] = false;
+//    		used[nxt] = false;
     	}
     }
     
