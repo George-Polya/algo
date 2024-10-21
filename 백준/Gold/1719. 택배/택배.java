@@ -15,14 +15,6 @@ public class Main {
         	adj[i] = new ArrayList<>();
         }
         
-        for(int y=1; y<=n; y++) {
-        	for(int x=1; x<=n; x++) {
-        		if(y == x)
-        			continue;
-        		trace[y][x] = x;
-        	}
-        }
-        
         
         for(int i = 0; i < m ;i++) {
         	st = new StringTokenizer(br.readLine());
@@ -43,10 +35,7 @@ public class Main {
         StringBuilder sb= new StringBuilder();
         for(int y=1; y<=n; y++) {
         	for(int x=1; x<=n; x++) {
-        		if(y==x) {
-        			sb.append("- ");
-        		}else
-        			sb.append(trace[y][x]).append(' ');
+        		sb.append(y == x ? "-" : trace[y][x]).append(' ');
         	}
         	sb.append('\n');
         }
@@ -87,7 +76,6 @@ public class Main {
     			continue;
     		int prv = i;
     		while(prev[prv] != idx) {
-    			
     			prv = prev[prv];
     		}
     		trace[idx][i] = prv;
