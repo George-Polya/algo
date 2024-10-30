@@ -9,79 +9,83 @@ public class Main {
     		st = new StringTokenizer(br.readLine());
         	m = Integer.parseInt(st.nextToken());
         	n = Integer.parseInt(st.nextToken());
-        	
         	if(m == 0 && n == 0)
         		break;
-        	
+        	edges = new Edge[n];
         	int total = 0;
-        	
-        	adj = new ArrayList[m];
-        	for(int i = 0; i <m;i++) {
-        		adj[i] = new ArrayList<>();
-        	}
-        	
-        	for(int i = 0; i < n ;i++) {
+        	for(int i = 0; i < n;i++) {
         		st = new StringTokenizer(br.readLine());
-        		int from = Integer.parseInt(st.nextToken());
-        		int to = Integer.parseInt(st.nextToken());
-        		if(from == 0 && to == 0)
+        		int x = Integer.parseInt(st.nextToken());
+        		int y = Integer.parseInt(st.nextToken());
+        		if(x == 0 && y == 0)
         			break;
         		int cost = Integer.parseInt(st.nextToken());
         		total += cost;
-        		
-        		adj[from].add(new Edge(to, cost));
-        		adj[to].add(new Edge(from, cost));
-        		
-        	}
-//        	System.out.println(total);
-        	visited = new boolean[m];
-        	PriorityQueue<Edge> pq = new PriorityQueue<>();
-        	pq.add(new Edge(0,0));
-        	int cnt = 0;
-        	while(!pq.isEmpty()) {
-//        		System.out.println("-----");
-//        		System.out.println(pq);
-        		Edge cur = pq.poll();
-//        		System.out.println(cur);
-        		if(visited[cur.idx])
-        			continue;
-        		visited[cur.idx] = true;
-        		cnt++;
-        		total -= cur.cost;
-        		if(cnt == m)
-        			break;
-        		for(Edge nxt : adj[cur.idx]) {
-        			if(visited[nxt.idx])
-        				continue;
-        			pq.add(nxt);
-        		}
+        		edges[i] = new Edge(x,y,cost);
         	}
         	
+        	Arrays.sort(edges);
+        	
+        	uf = new int[m];
+        	for(int i = 0; i < m; i++) {
+        		uf[i] = i;
+        	}
+        	int cnt = 0;
+        	for(Edge edge : edges) {
+        		int x = edge.x;
+        		int y = edge.y;
+        		int cost = edge.cost;
+        		
+        		if(!union(x,y)) {
+        			cnt++;
+        			total -= cost;
+        			
+        		}
+//        		System.out.printf("%d %d %d\n", x,y,cost);
+//        		System.out.println(Arrays.toString(uf));
+        	}
 //        	System.out.println(total);
         	sb.append(total).append('\n');
      
     	}
     	System.out.println(sb);
-    	   	
     	
     }
-    static boolean visited[];
-    static ArrayList<Edge> adj[];
+    
+    static int find(int x) {
+    	if(x == uf[x])
+    		return x;
+    	
+    	return uf[x] = find(uf[x]);
+    }
+    
+    static boolean union(int x, int y) {
+    	x = find(x);
+    	y = find(y);
+    	
+    	if(x == y)
+    		return true;
+    	
+    	uf[x] = y;
+    	return false;
+    			
+    }
+    
+    static Edge edges[];
+    static int uf[];
     static StringTokenizer st;
     static int m,n;
     static class Edge implements Comparable<Edge>{
-    	int idx, cost;
-    	public Edge(int idx,int cost) {
-    		this.idx = idx;
+    	int x,y,cost;
+    	
+    	public Edge(int x,int y, int cost) {
+    		this.x = x;
+    		this.y = y;
     		this.cost = cost;
     	}
     	
     	public int compareTo(Edge o) {
     		return cost - o.cost;
-    	}
-    	
-    	public String toString() {
-    		return idx+" "+cost;
     	}
     }
 }
