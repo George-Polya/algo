@@ -4,50 +4,56 @@ class Solution {
     int INF = Integer.MAX_VALUE / 2;
     int maxAlp, maxCop;
     int dp[][];
-    public int solution(int alp, int cop, int[][] problems) {
-            
+    int problems[][];
+    
+    int solve(int alp, int cop){
+        if(maxAlp <= alp && maxCop <= cop)
+            return 0;
+        
+        if(dp[alp][cop] != INF)
+            return dp[alp][cop];
+        
+        dp[alp][cop] = INF + 1;
+        int nxtAlp = Math.min(maxAlp, alp+1);
+        int nxtCop = Math.min(maxCop, cop+1);
+        
+        dp[alp][cop] = Math.min(dp[alp][cop], solve(nxtAlp, cop) + 1);
+        dp[alp][cop] = Math.min(dp[alp][cop], solve(alp, nxtCop) + 1);
+        
+        
         for(int problem[] : problems){
+            int alp_req = problem[0];
+            int cop_req = problem[1];
+            int alp_rwd = problem[2];
+            int cop_rwd = problem[3];
+            int cost = problem[4];
+            
+            if(alp_req <= alp && cop_req <= cop){
+                nxtAlp = Math.min(maxAlp, alp + alp_rwd);
+                nxtCop = Math.min(maxCop, cop + cop_rwd);
+                dp[alp][cop] = Math.min(dp[alp][cop], solve(nxtAlp, nxtCop) + cost);
+            }
+        }
+        
+        return dp[alp][cop];
+    }
+    
+    public int solution(int alp, int cop, int[][] _problems) {
+        problems = _problems;
+        for(int problem[] : problems ){
             maxAlp = Math.max(maxAlp, problem[0]);
             maxCop = Math.max(maxCop, problem[1]);
         }
         
         dp = new int[maxAlp+1][maxCop+1];
+        for(int row[] : dp){
+            Arrays.fill(row, INF);
+        }
         
         alp = Math.min(alp, maxAlp);
         cop = Math.min(cop, maxCop);
         
-        for(int row[]: dp){
-            Arrays.fill(row, INF);
-        }
+        return solve(alp, cop);
         
-        dp[alp][cop] = 0;
-        
-        for(int a = alp; a<=maxAlp; a++){
-            for(int c = cop; c<=maxCop; c++){
-                if(a + 1 <= maxAlp){
-                    dp[a+1][c] = Math.min(dp[a+1][c], dp[a][c] + 1);
-                }
-                
-                if(c + 1 <= maxCop){
-                    dp[a][c+1] = Math.min(dp[a][c+1], dp[a][c] + 1);
-                }
-                
-                for(int problem[] : problems){
-                    if(problem[0] <= a && problem[1] <= c){
-                        int alp_rwd = problem[2];
-                        int cop_rwd = problem[3];
-                        int cost = problem[4];
-                        int nxtAlp = Math.min(maxAlp, a + alp_rwd);
-                        int nxtCop = Math.min(maxCop, c + cop_rwd);
-                        
-                        dp[nxtAlp][nxtCop] = Math.min(dp[nxtAlp][nxtCop], dp[a][c] + cost);
-                    }
-                }
-                
-            }
-        }
-        
-        
-        return dp[maxAlp][maxCop];
     }
 }
