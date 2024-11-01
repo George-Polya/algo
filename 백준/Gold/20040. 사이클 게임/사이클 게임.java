@@ -24,15 +24,15 @@ public class Main {
 			int i = arr[turn][0];
 			int j = arr[turn][1];
 			
-			int I = find(i);
-			int J = find(j);
+			i = find(i);
+			j = find(j);
 			
-			if(I == J) {
+			if(i == j) {
 				System.out.println(turn);
 				return;
 			}
 			
-			uf[I] = J;
+			uf[i] = j;
 		}
 		System.out.println(0);
 	}
