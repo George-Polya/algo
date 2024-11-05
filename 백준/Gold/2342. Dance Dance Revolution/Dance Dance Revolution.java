@@ -5,13 +5,16 @@ public class Main {
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		st = new StringTokenizer(br.readLine());
+		n = st.countTokens() - 1;
+		arr = new int[n];
+		int idx = 0;
 		while(true) {
 			int value = Integer.parseInt(st.nextToken());
 			if(value == 0)
 				break;
-			arr.add(value);
+			arr[idx] = value;
+			idx++;
 		}
-		n = arr.size();
 		
 		dp = new int[n][5][5];
 		for(int z = 0; z < n; z++) {
@@ -24,8 +27,7 @@ public class Main {
 		System.out.println(solve(0,0,0));
 	}
 	static int n;
-	static int dp[][][];
-	
+	static int dp[][][], arr[];
 	static int solve(int cur, int l, int r) {
 		if(cur == n)
 			return 0;
@@ -33,12 +35,12 @@ public class Main {
 		if(dp[cur][l][r] != INF)
 			return dp[cur][l][r];
 		
-		if(arr.get(cur) != r) {
-			dp[cur][l][r] = Math.min(dp[cur][l][r],  solve(cur + 1, arr.get(cur), r) + calc(arr.get(cur), l));
+		if(arr[cur] != r) {
+			dp[cur][l][r] = Math.min(dp[cur][l][r],solve(cur + 1, arr[cur], r) + calc(arr[cur], l));
 		}
 		
-		if(arr.get(cur) != l) {
-			dp[cur][l][r] = Math.min(dp[cur][l][r],  solve(cur + 1, l, arr.get(cur)) + calc(arr.get(cur), r));
+		if(arr[cur] != l) {
+			dp[cur][l][r] = Math.min(dp[cur][l][r],solve(cur + 1, l, arr[cur]) + calc(arr[cur], r));
 		}
 		
 		return dp[cur][l][r];
@@ -78,5 +80,4 @@ public class Main {
 	static int INF = Integer.MAX_VALUE / 2;
 	static int ans = INF;
 	static StringTokenizer st;
-	static ArrayList<Integer> arr = new ArrayList<>();
 }
