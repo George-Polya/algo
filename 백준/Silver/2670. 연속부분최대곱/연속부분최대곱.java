@@ -10,16 +10,15 @@ public class Main {
 			arr[i] = Double.parseDouble(br.readLine());
 		}
 		
-		double ans = -1;
-		for(int s = 1; s<=n; s++) {
-			double p = arr[s];
-			ans = Math.max(ans, p);
-			
-			for(int e = s + 1; e <= n; e++) {
-				p *= arr[e];
-				ans = Math.max(ans,p);
-			}
+		
+		
+		double ans = arr[1];
+		double cur = arr[1];
+		for(int i = 2; i<=n; i++) {
+			cur = Math.max(arr[i], cur * arr[i]);
+			ans = Math.max(ans,  cur);
 		}
+		
 		System.out.printf("%.3f\n", ans);
 	}
 	static int n;
