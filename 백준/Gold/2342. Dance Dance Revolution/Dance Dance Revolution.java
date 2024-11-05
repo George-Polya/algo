@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-public class Main{
+public class Main {
 	public static void main(String[] args) throws IOException{
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		st = new StringTokenizer(br.readLine());
@@ -21,9 +21,7 @@ public class Main{
 				}
 			}
 		}
-		
-		ans = solve(0,0,0);
-		System.out.println(ans);
+		System.out.println(solve(0,0,0));
 	}
 	static int n;
 	static int dp[][][];
@@ -35,17 +33,15 @@ public class Main{
 		if(dp[cur][l][r] != INF)
 			return dp[cur][l][r];
 		
-		int ret = INF;
 		if(arr.get(cur) != r) {
-			ret = Math.min(ret,  solve(cur + 1, arr.get(cur), r) + calc(arr.get(cur), l));
+			dp[cur][l][r] = Math.min(dp[cur][l][r],  solve(cur + 1, arr.get(cur), r) + calc(arr.get(cur), l));
 		}
 		
 		if(arr.get(cur) != l) {
-			ret = Math.min(ret,  solve(cur + 1, l, arr.get(cur)) + calc(arr.get(cur), r));
+			dp[cur][l][r] = Math.min(dp[cur][l][r],  solve(cur + 1, l, arr.get(cur)) + calc(arr.get(cur), r));
 		}
 		
-		return dp[cur][l][r] = ret;
-//		return ret;
+		return dp[cur][l][r];
 		
 	}
 	
