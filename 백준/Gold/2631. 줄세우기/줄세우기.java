@@ -12,37 +12,19 @@ public class Main {
         
         dp = new int[n+1];
         Arrays.fill(dp, -1);
-//        dp[0] = 0;
-//        
-//        for(int i = 1; i<=n; i++) {
-//        	for(int j = 0; j < i; j++) {
-//        		if(arr[j] < arr[i])
-//        			dp[i] = Math.max(dp[i], dp[j] + 1);
-//        	}
-//        }
+        dp[0] = 0;
         
-//        solve(n);
-        for(int i = 1; i<=n; i++)
-        	solve(i);
-//        System.out.println(Arrays.toString(dp));
-//        System.out.println(n - solve(n));
+        for(int i = 1; i<=n; i++) {
+        	for(int j = 0; j < i; j++) {
+        		if(arr[j] < arr[i])
+        			dp[i] = Math.max(dp[i], dp[j] + 1);
+        	}
+        }
+        
         int ans = -1;
         for(int i = 1;i <=n; i++)
         	ans = Math.max(ans, dp[i]);
         System.out.println(n - ans);
-    }
-    
-    static int solve(int idx) {
-    	if(idx == 0)
-    		return dp[idx] = 0;
-    	if(dp[idx] != -1)
-    		return dp[idx];
-    	
-    	for(int i = 0; i < idx; i++) {
-    		if(arr[i] < arr[idx])
-    			dp[idx] = Math.max(dp[idx], solve(i) + 1);
-    	}
-    	return dp[idx];
     }
     
     static int n;
