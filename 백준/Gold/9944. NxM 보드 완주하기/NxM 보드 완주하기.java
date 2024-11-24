@@ -38,8 +38,7 @@ public class Main {
     			  visited[y][x] = true;
     			  
     			  for(int dir = 0; dir < 4; dir++) {
-//    				  System.out.println("-----");
-    				  solve(y,x,1,0,dir);
+    				  solve(y,x,1,1,dir);
     			  }
     					  
     			  visited[y][x] = false;
@@ -50,12 +49,21 @@ public class Main {
       System.out.println(sb);
     }
     static int total;
-    static void solve(int y, int x,int cnt ,int num, int dir) {
-//    	System.out.printf("%d %d\n", y,x);
-    	if(cnt == total) {
-    		ans = Math.min(ans, num + 1);
-//    		return;
+
+    /*
+     * (y,x) : 현재 좌표
+     * cnt : 현재까지 이동한 칸 수
+     * phase : 현재 단계 
+     * dir : 현재 방향
+     */
+    static void solve(int y, int x,int cnt ,int phase, int dir) {
+		if(phase >= ans)
+			return;
+		if(cnt == total) {
+    		ans = Math.min(ans, phase);
+    		return;
     	}
+		
     	
     	int ny = y + dy[dir];
     	int nx = x + dx[dir];
@@ -67,12 +75,12 @@ public class Main {
     			if(OOB(ny,nx) || board[ny][nx] == '*' || visited[ny][nx])
     				continue;
     			visited[ny][nx] = true;
-    			solve(ny,nx,cnt + 1, num + 1, ndir);
+    			solve(ny,nx,cnt + 1, phase + 1, ndir);
     			visited[ny][nx] = false;
     		}
     	}else {
     		visited[ny][nx] = true;
-    		solve(ny,nx, cnt + 1, num, dir);
+    		solve(ny,nx, cnt + 1, phase, dir);
     		visited[ny][nx] = false;
     	}
     }
