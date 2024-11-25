@@ -39,7 +39,7 @@ public class Main {
       }
       
       bfs();
-      System.out.println(ans);
+//      System.out.println(ans);
     }
     
     static int INT_MAX = Integer.MAX_VALUE / 2;
@@ -55,9 +55,9 @@ public class Main {
     		
 //    		System.out.println(cur);
     		if(cur.isSame(end[0], end[1], end[2])) {
-//    			System.out.println(dist[cur.dir][cur.y][cur.x]);
-    			ans = Math.min(ans, dist[cur.dir][cur.y][cur.x]);
-//    			return;
+//    			ans = Math.min(ans, dist[cur.dir][cur.y][cur.x]);
+    			System.out.println(dist[cur.dir][cur.y][cur.x]);
+    			return;
     		}
     		
     		
@@ -69,7 +69,6 @@ public class Main {
     				for(int k = 3; k >= 1; k--) {
     					State nxt = getNxtPos(cur.y, cur.x, cur.dir, k);
     					if(nxt != NO_STATE) {
-//    				System.out.printf("nxt: %s, k: %d\n", nxt, k);
     						dist[nxt.dir][nxt.y][nxt.x] = dist[cur.dir][cur.y][cur.x] + 1;
     						q.add(nxt);
     					}
@@ -79,9 +78,7 @@ public class Main {
     					dist[ndir][cur.y][cur.x] = dist[cur.dir][cur.y][cur.x] + 1;
     					q.add(new State(cur.y, cur.x, ndir));
     				}
-    				
     			}
-    			
 
     		}
     	}
