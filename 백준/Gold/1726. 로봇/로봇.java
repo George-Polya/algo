@@ -44,7 +44,6 @@ public class Main {
     
     static int INT_MAX = Integer.MAX_VALUE / 2;
     
-    static int ans = INT_MAX;
     static void bfs() {
     	Queue<State> q = new ArrayDeque<>();
     	q.add(new State(start[0], start[1], start[2]));
@@ -53,9 +52,7 @@ public class Main {
     	while(!q.isEmpty()) {
     		State cur = q.poll();
     		
-//    		System.out.println(cur);
     		if(cur.isSame(end[0], end[1], end[2])) {
-//    			ans = Math.min(ans, dist[cur.dir][cur.y][cur.x]);
     			System.out.println(dist[cur.dir][cur.y][cur.x]);
     			return;
     		}
@@ -74,7 +71,12 @@ public class Main {
     					}
     				}
     			}else {
-    				if(dist[ndir][cur.y][cur.x] > dist[cur.dir][cur.y][cur.x] + 1) {
+//    				if(dist[ndir][cur.y][cur.x] > dist[cur.dir][cur.y][cur.x] + 1) {
+//    					dist[ndir][cur.y][cur.x] = dist[cur.dir][cur.y][cur.x] + 1;
+//    					q.add(new State(cur.y, cur.x, ndir));
+//    				}
+    				
+    				if(dist[ndir][cur.y][cur.x] == INT_MAX) {
     					dist[ndir][cur.y][cur.x] = dist[cur.dir][cur.y][cur.x] + 1;
     					q.add(new State(cur.y, cur.x, ndir));
     				}
@@ -93,7 +95,9 @@ public class Main {
     		ny += dy[dir];
     		nx += dx[dir];
 //    		System.out.printf("k: %d | (%d, %d)\n", k, ny,nx);
-    		if(OOB(ny,nx) || dist[dir][ny][nx] <= dist[dir][y][x] + 1 || board[ny][nx] == 1)
+//    		if(OOB(ny,nx) || dist[dir][ny][nx] <= dist[dir][y][x] + 1 || board[ny][nx] == 1)
+//    			return NO_STATE;
+    		if(OOB(ny,nx) || dist[dir][ny][nx] != INT_MAX|| board[ny][nx] == 1)
     			return NO_STATE;
     		
     		
