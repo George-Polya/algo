@@ -25,10 +25,11 @@ public class Main {
     	  sb.append("Case "+idx+": ");
     	  idx++;
     	  
-    	  if(total == 1) {
-    		  sb.append(0).append('\n');
-    		  continue;
-    	  }
+//    	  if(total == 1) {
+//    		  sb.append(0).append('\n');
+//    		  continue;
+//    	  }
+		  
     	  visited = new boolean[n+1][m+1];
     	  
     	  for(int y=1; y<=n; y++) {
@@ -37,9 +38,10 @@ public class Main {
     				  continue;
     			  visited[y][x] = true;
     			  
-    			  for(int dir = 0; dir < 4; dir++) {
-    				  solve(y,x,1,1,dir);
-    			  }
+//    			  for(int dir = 0; dir < 4; dir++) {
+//    				  solve(y,x,1,1,dir);
+//    			  }
+    			  solve(y,x,1,0);
     					  
     			  visited[y][x] = false;
     		  }
@@ -56,7 +58,7 @@ public class Main {
      * phase : 현재 단계 
      * dir : 현재 방향
      */
-    static void solve(int y, int x,int cnt ,int phase, int dir) {
+    static void solve(int y, int x,int cnt ,int phase) {
 		if(phase >= ans)
 			return;
 		if(cnt == total) {
@@ -64,25 +66,52 @@ public class Main {
     		return;
     	}
 		
+		for(int dir = 0; dir < 4; dir++) {
+			int ny = y + dy[dir];
+			int nx = x + dx[dir];
+			
+			if(OOB(ny,nx) || visited[ny][nx] || board[ny][nx] == '*')
+				continue;
+			
+			int vCnt = 0;
+			
+			int sy = ny;
+			int sx = nx;
+			
+			while(!OOB(ny,nx) && board[ny][nx] == '.' && !visited[ny][nx]) {
+				visited[ny][nx] = true;
+				vCnt++;
+				ny += dy[dir];
+				nx += dx[dir];
+			}
+			
+			solve(ny - dy[dir], nx - dx[dir], cnt + vCnt, phase+1);
+			
+			while(ny != sy || nx != sx) {
+				ny -= dy[dir];
+				nx -= dx[dir];
+				visited[ny][nx] = false;
+			}
+		}
     	
-    	int ny = y + dy[dir];
-    	int nx = x + dx[dir];
-    	
-    	if(OOB(ny,nx) || board[ny][nx] == '*' || visited[ny][nx]) {
-    		for(int ndir = 0; ndir < 4; ndir++) {
-    			ny = y + dy[ndir];
-    			nx = x + dx[ndir];
-    			if(OOB(ny,nx) || board[ny][nx] == '*' || visited[ny][nx])
-    				continue;
-    			visited[ny][nx] = true;
-    			solve(ny,nx,cnt + 1, phase + 1, ndir);
-    			visited[ny][nx] = false;
-    		}
-    	}else {
-    		visited[ny][nx] = true;
-    		solve(ny,nx, cnt + 1, phase, dir);
-    		visited[ny][nx] = false;
-    	}
+//    	int ny = y + dy[dir];
+//    	int nx = x + dx[dir];
+//    	
+//    	if(OOB(ny,nx) || board[ny][nx] == '*' || visited[ny][nx]) {
+//    		for(int ndir = 0; ndir < 4; ndir++) {
+//    			ny = y + dy[ndir];
+//    			nx = x + dx[ndir];
+//    			if(OOB(ny,nx) || board[ny][nx] == '*' || visited[ny][nx])
+//    				continue;
+//    			visited[ny][nx] = true;
+//    			solve(ny,nx,cnt + 1, phase + 1, ndir);
+//    			visited[ny][nx] = false;
+//    		}
+//    	}else {
+//    		visited[ny][nx] = true;
+//    		solve(ny,nx, cnt + 1, phase, dir);
+//    		visited[ny][nx] = false;
+//    	}
     }
     
     
