@@ -10,34 +10,37 @@ public class Main {
         a = Integer.parseInt(st.nextToken());
         b = Integer.parseInt(st.nextToken());
         
-        towers = new ArrayList<>();
         
-        if(a + b > n + 1) {
+        Deque<Integer> deq = new ArrayDeque<>();
+        
+        StringBuilder sb = new StringBuilder();
+        
+        for(int i = 1; i< a; i++)
+        	deq.add(i);
+        
+        deq.add(Math.max(a, b));
+        
+        for(int i = b-1; i>0; i--)
+        	deq.add(i);
+        
+        
+        if(deq.size() > n) {
         	System.out.println(-1);
         	return;
         }
         
-        for(int i = 1; i< a; i++)
-        	towers.add(i);
+        int first = deq.pollFirst();
+        int size = deq.size();
         
-        towers.add(Math.max(a, b));
-        for(int i = b-1; i>=1; i--)
-        	towers.add(i);
+        for(int i = 1; i<= n - size - 1; i++)
+        	deq.addFirst(1);
         
+        deq.addFirst(first);
         
-        while(towers.size() < n) {
-        	if(a == 1)
-        		towers.add(1,1);
-        	else
-        		towers.add(0,1);
-        }
-        
-        StringBuilder sb = new StringBuilder();
-        for(int height : towers)
-        	sb.append(height).append(' ');
+        for(int i = 1; i<=n; i++)
+        	sb.append(deq.pollFirst()).append(' ');
         System.out.println(sb);
    }
     static StringTokenizer st;
-    static ArrayList<Integer> towers;
     static int n,a,b;
 }
