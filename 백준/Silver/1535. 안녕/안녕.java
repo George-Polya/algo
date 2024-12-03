@@ -17,47 +17,23 @@ public class Main {
     		plus[i] = Integer.parseInt(st.nextToken());
     	}
     	
-    	dp = new int[n + 1][101];
-    	for(int row[] : dp) {
-    		Arrays.fill(row, -1);
+    	
+    	dp = new int[101];
+    	
+    	for(int i = 1; i<=n; i++) {
+    		for(int h = 100; h>=1; h--) {
+    			if(h-lose[i] >0 && dp[h-lose[i]] != -1)
+    				dp[h] = Math.max(dp[h], dp[h-lose[i]] +plus[i] );
+    				
+    		}
     	}
-//    	
-//    	solve(1, 100, 0);
-//    	System.out.println(ans);
     	
+    	System.out.println(dp[100]);
     	
-    	System.out.println(solve(1, 100));
-    	
-    }
-    static int solve(int cur, int health) {
-    	if(cur == n + 1)
-    		return 0;
-    	
-    	if(dp[cur][health] != -1)
-    		return dp[cur][health];
-    	
-    	int ret = 0;
-    	if(health > lose[cur])
-    		ret = Math.max(ret,  solve(cur + 1, health-lose[cur]) + plus[cur]);
-    	ret = Math.max(ret,  solve(cur + 1, health));
-    	
-    	return dp[cur][health] = ret;
     }
     
-    static void solve(int cur, int health, int sum) {
-    	if(cur == n + 1) {
-    		ans = Math.max(ans, sum);
-    		return;
-    	}
-    	
-    	if(health > lose[cur]) {
-    		solve(cur + 1, health - lose[cur], sum + plus[cur]);
-    	}
-    	
-    	solve(cur +1, health, sum);
-    }
     
-    static int dp[][];
+    static int dp[];
     
     static int ans;
     static StringTokenizer st;
