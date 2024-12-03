@@ -17,9 +17,31 @@ public class Main {
     		plus[i] = Integer.parseInt(st.nextToken());
     	}
     	
-    	solve(1, 100, 0);
-    	System.out.println(ans);
+    	dp = new int[n + 1][101];
+    	for(int row[] : dp) {
+    		Arrays.fill(row, -1);
+    	}
+//    	
+//    	solve(1, 100, 0);
+//    	System.out.println(ans);
     	
+    	
+    	System.out.println(solve(1, 100));
+    	
+    }
+    static int solve(int cur, int health) {
+    	if(cur == n + 1)
+    		return 0;
+    	
+    	if(dp[cur][health] != -1)
+    		return dp[cur][health];
+    	
+    	int ret = 0;
+    	if(health > lose[cur])
+    		ret = Math.max(ret,  solve(cur + 1, health-lose[cur]) + plus[cur]);
+    	ret = Math.max(ret,  solve(cur + 1, health));
+    	
+    	return dp[cur][health] = ret;
     }
     
     static void solve(int cur, int health, int sum) {
@@ -35,6 +57,7 @@ public class Main {
     	solve(cur +1, health, sum);
     }
     
+    static int dp[][];
     
     static int ans;
     static StringTokenizer st;
