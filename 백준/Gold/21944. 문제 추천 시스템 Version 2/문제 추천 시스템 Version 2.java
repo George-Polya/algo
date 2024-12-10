@@ -7,32 +7,20 @@ import java.util.*;
 public class Main {
     static int n, m;
     static class Pair implements Comparable<Pair>{
-        int level, id;
+        int first, second;
 
-        public Pair(int level, int id) {
-        	this.level = level;
-        	this.id = id;
+        public Pair(int first, int second) {
+        	this.first = first;
+        	this.second = second;
         }
         
         public int compareTo(Pair o) {
-        	if(level != o.level)
-        		return level - o.level;
-        	return id - o.id;
+        	if(first != o.first)
+        		return first - o.first;
+        	return second - o.second;
         }
         
-        public boolean eqausl(Object o) {
-        	if(this == o)
-        		return true;
-        	if(getClass() != o.getClass())
-        		return false;
-        	
-        	Pair p = (Pair)o;
-        	return this.level == p.level && this.id == p.id;
-        }
-        
-        public int hashCode() {
-        	return Objects.hash(level,id);
-        }
+    
 
     }
 
@@ -78,16 +66,16 @@ public class Main {
                 int group = Integer.parseInt(st.nextToken());
                 int x = Integer.parseInt(st.nextToken());
                 if (x == 1) {
-                    sb.append(treeGroups[group].last().id).append('\n');
+                    sb.append(treeGroups[group].last().second).append('\n');
                 } else {
-                    sb.append(treeGroups[group].first().id).append('\n');
+                    sb.append(treeGroups[group].first().second).append('\n');
                 }
             }else if (oper.equals("recommend2")) {
                 int x = Integer.parseInt(st.nextToken());
                 if (x == 1) {
-                    sb.append(tree.last().id).append('\n');
+                    sb.append(tree.last().second).append('\n');
                 } else {
-                    sb.append(tree.first().id).append('\n');
+                    sb.append(tree.first().second).append('\n');
                 }
             }else if (oper.equals("recommend3")) {
                 int x = Integer.parseInt(st.nextToken());
@@ -97,21 +85,21 @@ public class Main {
                     if (now == null) {
                         sb.append(-1).append('\n');
                     } else {
-                        sb.append(now.id).append('\n');
+                        sb.append(now.second).append('\n');
                     }
                 } else {
                     Pair now = tree.lower(new Pair(limit, -1));
                     if (now == null) {
                         sb.append(-1).append('\n');
                     } else {
-                        sb.append(now.id).append('\n');
+                        sb.append(now.second).append('\n');
                     }
                 }
             }else if (oper.equals("solved")) {
                 int id = Integer.parseInt(st.nextToken());
                 Pair info = problems.get(id);
-                int group = info.id;
-                int level = info.level;
+                int group = info.second;
+                int level = info.first;
 
                 treeGroups[group].remove(new Pair(level, id));
                 tree.remove(new Pair(level, id));
