@@ -12,16 +12,16 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         s = Integer.parseInt(st.nextToken());
-        arr = new int[n + 1];
+        arr = new int[n];
         st = new StringTokenizer(br.readLine());
-        for (int i = 1; i <= n; i++) {
+        for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
 
-        int right = 1, sum = arr[1], ans = INF;
-        for (int left = 1; left<= n; left++) {
-            while (right < n && sum < s) {
+        int right = 0, sum = arr[0], ans = INF;
+        for (int left = 0; left< n; left++) {
+            while (right < n - 1 && sum < s) {
                 right += 1;
                 sum += arr[right];
             }
