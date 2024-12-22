@@ -12,11 +12,12 @@ public class Main {
 
 		visited = new boolean[n + 1];
 		isLeaf = new boolean[n + 1];
+		adj = new ArrayList[n+1];
+		treeNodes = new ArrayList[n+1];
+		treeEdges = new ArrayList[n+1];
 
-		for (int i = 1; i <= n; i++) {
+		for (int i = 0; i <= n; i++) {
 			adj[i] = new ArrayList<>();
-		}
-		for (int i = 0; i <=n; i++) {
 			treeNodes[i] = new ArrayList<>();
 			treeEdges[i] = new ArrayList<>();
 		}
@@ -28,10 +29,6 @@ public class Main {
 			int v = Integer.parseInt(st.nextToken());
 			adj[u].add(new Edge(v, i));
 			adj[v].add(new Edge(u, i));
-		}
-		if (n <= 2 || m == 0) {
-			System.out.println(-1);
-			return;
 		}
 
 
@@ -89,7 +86,7 @@ public class Main {
 		print(treeEdges[1]);
 	}
 
-	static final int N_MAX = (int) 1e5;
+	static final int MAX_N = (int) 1e5;
 	static int n, m, treeNum;
 	static boolean visited[], isLeaf[];
 
@@ -103,10 +100,8 @@ public class Main {
 	}
 
 	static StringTokenizer st;
-
-	static ArrayList<Edge>[] adj = new ArrayList[N_MAX + 1];
-	static ArrayList<Integer>[] treeNodes = new ArrayList[N_MAX + 1];
-	static ArrayList<Integer>[] treeEdges = new ArrayList[N_MAX + 1];
+	static ArrayList<Edge> adj[];
+	static ArrayList<Integer> treeNodes[], treeEdges[];
 
 	static void makeTree(int cur, int treeIdx) {
 		treeNodes[treeIdx].add(cur);
