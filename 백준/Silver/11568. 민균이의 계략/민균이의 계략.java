@@ -12,31 +12,53 @@ public class Main {
 			arr[i] = Integer.parseInt(st.nextToken());
 		}
 		
-		dp = new int[n+1];
-		int ans = 0;
-		for(int i = 1; i<=n; i++) {
-			ans = Math.max(ans,  solve(i));
-		}
+//		dp = new int[n+1];
+//		for(int i = 1; i<=n; i++) {
+//			for(int j = 0; j < i; j++) {
+//				if(arr[j] < arr[i]) {
+//					dp[i] = Math.max(dp[i],dp[j] + 1);
+//				}
+//			}
+//		}
 		
-		System.out.println(ans);
-	}
-	
-	static int solve(int idx) {
-		if(idx == 0)
-			return 0;
+//		System.out.println(Arrays.toString(dp));
+
+		ArrayList<Integer> dp2 = new ArrayList<>();
 		
-		if(dp[idx] != 0)
-			return dp[idx];
-		
-		int ret = 0;
-		for(int i = 0; i < idx; i++) {
-			if(arr[i] < arr[idx]) {
-				ret = Math.max(ret,  solve(i) + 1);
+		dp2.add(arr[1]);
+		for(int i =1;i<=n; i++) {
+			if(arr[i] > dp2.get(dp2.size() - 1)) {
+				dp2.add(arr[i]);
+			}else {
+				int idx = lowerBound(dp2, arr[i]);
+				dp2.set(idx, arr[i]);
 			}
 		}
 		
-		return dp[idx] = ret;
+//		System.out.println(dp2);
+		System.out.println(dp2.size());
+	}	
+	static int lowerBound(ArrayList<Integer> dp, int target) {
+		int l = 0;
+		int r = dp.size() - 1;
+		
+		int ret = last + 1;
+		
+		while(l<=r) {
+			int mid = (l + r)/ 2;
+			
+			if(target <= dp.get(mid)) {
+				r = mid - 1;
+				ret = mid;
+			}else {
+				l = mid + 1;
+			}
+		}
+		
+		return ret;
+		
 	}
+	static int last;
 	static int n;
 	static int arr[], dp[];
 	static StringTokenizer st;
