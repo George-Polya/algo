@@ -20,8 +20,15 @@ public class Main {
         dist = new long[n+1]; // 1번 도시에서 시작해 나머지 도시로 가는데 필요한 최소 거리
         Arrays.fill(dist, INF);
         dist[1] = 0;
+
         
-        for(int i = 1; i<=n; i++) { // n개의 도시각각에 대해 전부 다음을 수행
+        /*
+         * 기본적인 아이디어는 다익스트라와 같다.(1에서 현재 노드까지의 최단 거리 = 1에서 이전 노드까지의 최단거리 + 이전노드에서 현재 노드까지의 최단거리)  
+         * 다만, 다익스트라와 다른점은 음수 가중치가 존재한다는 점
+         * 따라서, 매번 모든 간선을 확인해봐야한다(벨만 포드)
+		 * n개의 도시각각에 대해 전부 다음을 수행
+		 */
+        for(int i = 1; i<=n; i++) {
         	for(Edge edge : edges) {
         		if(dist[edge.from] == INF)
         			continue;
@@ -32,6 +39,9 @@ public class Main {
         	}
         }
         
+        /*
+         * 음수 cycle 발생 체크 
+         */
         for(Edge edge : edges) {
         	if(dist[edge.from] == INF)
         		continue;
