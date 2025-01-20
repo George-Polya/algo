@@ -29,17 +29,14 @@ class Solution {
         }
     }
     
-    static int binarySearch(List<Integer> sums, int sum){
+    static int binarySearch(List<Integer> sums, int target){
         int l = 0;
         int r = sums.size()-1;
-        int ret = Integer.MIN_VALUE;
+        int ret = -1;
         while(l<=r){
             int mid = (l+r)/2;
-        
             
-
-        
-            if(sum > sums.get(mid)){
+            if(target > sums.get(mid)){
                 l = mid + 1;
                 ret = Math.max(ret, mid);
             }else{
@@ -67,10 +64,10 @@ class Solution {
             int winCnt = 0;
             for(int sum: aSums){
                 int idx = binarySearch(bSums, sum);
-                if(idx != Integer.MIN_VALUE)
+                if(idx != -1)
                     winCnt += idx + 1;
             }
-            // System.out.println(winCnt);
+            
             if(best < winCnt){
                 
                 best = winCnt;
