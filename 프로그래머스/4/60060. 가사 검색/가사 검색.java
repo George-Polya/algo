@@ -1,96 +1,74 @@
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
 class Solution {
-    static int n,m;
-    static String reverseString(String str){
-        StringBuilder sb = new StringBuilder();
-        sb.append(str);
-        return sb.reverse().toString();
+    private final int R = 26;
+    private class TrieNode {
+        private TrieNode[] next;
+        private boolean isEnd;
+        private TrieNode() {
+            next = new TrieNode[R];
+        }
     }
-    static String words[], queries[];
-    static Map<Integer, List<String>> map = new HashMap<>();
-    static Map<Integer, List<String>> rMap = new HashMap<>();
-    
-    static int binarySearch(String target, List<String> list){
-        int l = 0;
-        int r = list.size() - 1;
-        int ret = r + 1;
-        
-        while(l<=r){
-            int mid = (l + r)/2;
-            
-            if(target.compareTo(list.get(mid)) < 0){
-                r = mid - 1;
-                ret = mid;
-            }else{
-                l = mid + 1;
+    public int[] solution(String[] words, String[] queries) {
+        int[] answer = new int[queries.length];
+        TrieNode root = new TrieNode();
+        TrieNode revRoot = new TrieNode();
+        // Map<Integer, Integer> depthCount = new HashMap<>();
+        for (String word: words) {
+            buildTrie(root, word);
+            buildReverseTrie(revRoot, word);
+        }
+        // 검색 키워드는 중복될 수도 있습니다.
+        Map<String, Integer> memo = new HashMap<>();
+        for (int i = 0; i < queries.length; ++i) {
+            if (memo.containsKey(queries[i])) {
+                answer[i] = memo.get(queries[i]);
+            } else {
+                if (queries[i].charAt(0) == '?') {
+                    answer[i] = lookup(revRoot, new StringBuilder(queries[i]).reverse().toString(), 0);
+                } else {
+                    answer[i] = lookup(root, queries[i], 0);
+                }
+                memo.put(queries[i], answer[i]);                
             }
         }
-        
-        return ret;
-        
-    }
-    
-    public int[] solution(String[] _words, String[] _queries) {
-        words = _words;
-        queries = _queries;
-        n = words.length;
-        m = queries.length;
-        
-        for(int i = 0; i < n ;i++){
-            String word = words[i];
-            
-            int len = word.length();
-            if(!map.containsKey(len)){
-                List<String> list = new ArrayList<>();
-                List<String> reverse = new ArrayList<>();
-                list.add(word);
-                reverse.add(reverseString(word));
-                
-                map.put(len, list);
-                rMap.put(len, reverse);
-                
-            }else{
-                map.get(len).add(word);
-                rMap.get(len).add(reverseString(word));
-            }
-            
-              // System.out.printf("%s : %s\n", word, map.get(len));
-        }
-        
-        for(int len : map.keySet()){
-            Collections.sort(map.get(len));
-            Collections.sort(rMap.get(len));
-        }
-        
-//         System.out.println(map);
-//         System.out.println(rMap);
-        
-        int answer[] = new int[m];
-        for(int i = 0; i < m; i++){
-            String target = queries[i];
-            int len = target.length();
-            List<String> list = map.get(len);
-            if(target.charAt(0) == '?'){
-                target = reverseString(target);
-                list = rMap.get(len);
-            }
-            
-            if(!map.containsKey(len)){
-                continue;
-            }
-        
-            String minQuery = target.replace("?", "a");
-            String maxQuery = target.replace("?", "z");
-            
-            int s = binarySearch(minQuery, list);
-            int e = binarySearch(maxQuery, list); 
-            // System.out.printf("%s : %d %d\n", minQuery, s,e);
-            
-            answer[i] = e - s;
-            
-        }
-        
-        
         return answer;
+    }
+
+    private void buildTrie(TrieNode root, String word) {
+        TrieNode node = root;
+        for (char c: word.toCharArray()) {
+            if (node.next[c - 'a'] == null) node.next[c - 'a'] = new TrieNode();
+            node = node.next[c - 'a'];
+        }
+        node.isEnd = true;
+        // depthCount.put(word.length(), depthCount.getOrDefault(word.length()) + 1);
+    }
+    private void buildReverseTrie(TrieNode root, String word) {
+        TrieNode node = root;
+        for (int i = word.length() - 1; i >= 0; --i) {
+            char c = word.charAt(i);
+            if (node.next[c - 'a'] == null) node.next[c - 'a'] = new TrieNode();
+            node = node.next[c - 'a'];
+        }
+        node.isEnd = true;
+        // depthCount.put(word.length(), depthCount.getOrDefault(word.length()) + 1);
+    }
+    private int lookup(TrieNode node, String query, int depth) {
+        if (depth == query.length()) {
+            if (node.isEnd) return 1;
+            return 0;
+        }
+        char c = query.charAt(depth);
+        int count = 0;
+        if (c == '?') {
+            for (int i = 0; i < R; ++i) {
+                if (node.next[i] != null) count += lookup(node.next[i], query, depth + 1);
+            }
+            return count;
+        } else {
+            if (node.next[c - 'a'] != null) count = lookup(node.next[c - 'a'], query, depth + 1);
+        }
+        return count;
     }
 }
