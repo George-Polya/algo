@@ -60,15 +60,16 @@ public class Main {
     static void printBoard(int board[][], int len) {
     	int n = board.length;
     	int m = board[0].length;
-    	String format = String.format("%%0%dd", len);
+    	StringBuilder sb = new StringBuilder();
     	for(int y=0; y<n; y++) {
     		for(int x=0; x<m; x++) {
-    			System.out.printf("%" + len+"d", board[y][x]);
+    			sb.append(String.format("%" + len +"d", board[y][x]));
     			if( x < m - 1)
-    				System.out.print(" ");
+    				sb.append(" ");
     		}
-    		System.out.println();
+    		sb.append('\n');
     	}
+    	System.out.println(sb);
     }
     static int board[][];
     static boolean OOB(int y,int x, int ry, int rx) {
