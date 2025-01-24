@@ -21,16 +21,17 @@ public class Main {
 //    	System.out.println(ry+ " "+rx);
     	board = new int[ry][rx];
 
-    	
-    	A: while(check()) {
+    	int count = 0;
+    	A: while(count != ry * rx) {
     		for(int num = 0; num < moveNum; num++) {
     			int _y = y - y1;
     			int _x = x - x1;
     			if(!OOB(_y,_x, ry, rx)){
     				board[_y][_x] = cnt;
+    				count++;
     			}
     			
-    			if(!check()) {
+    			if(count == ry * rx) {
     				break A;
     			}
     			y = y + dy[dir];
