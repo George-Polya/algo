@@ -19,15 +19,15 @@ public class Main {
     		pSum[i] = pSum[i-1] + arr[i];
     	}
     	
-    	long target = 0;
     	Map<Long, Integer> map = new HashMap<>();
     	
     	long ans = 0;
-    	
+    	long target = 0;
     	for(int i = 0; i < N ;i++) {
     		target += K;
+//    		target = K * (i+1);
     		long diff = target - pSum[i];
-    		
+//    		System.out.printf("%d | target : %d | diff : %d\n", i, target, diff);
     		if(diff == 0)
     			ans++;
     		
