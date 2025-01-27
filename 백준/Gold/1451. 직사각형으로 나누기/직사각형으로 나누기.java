@@ -1,120 +1,94 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.*;
- 
-/*
-	가능한 직사각형의 모습은 총 6가지이다.
-    1. 가로 3개
-    2. 세로 3개
-    3. 왼쪽 1개 오른쪽 2개
-    4. 왼쪽 2개 오른쪽 1개
-    5. 위 1개 아래 2개
-    6. 위 2개 아래 1개
-    
-    
-	이를 모두 N^2으로 구하면 제한 시간 이내로 구할 수 있다.
-*/
- 
+import java.io.*;
+
 public class Main {
-    static long max =0;
-    static int[][] map;
-    static int[][] preSum;
- 
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
- 
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
- 
-        map = new int[N + 1][M + 1];
-        preSum = new int[N + 1][M + 1];
-		
-        //누적합 및 값 세팅
-        for (int i = 0; i < N; i++) {
-            String input = br.readLine();
- 
-            for (int j = 0; j < input.length(); j++) {
-                map[i + 1][j + 1] = input.charAt(j) - '0';
-                preSum[i + 1][j + 1] = preSum[i + 1][j] + preSum[i][j + 1] - preSum[i][j] + map[i + 1][j + 1];
-            }
-        }
- 
-        //세로 3개
-        for (int col1 = 1; col1 <= M - 2; col1++) {
-            for (int col2 = col1 + 1; col2 <= M - 1; col2++) {
-                Rect rect1 = new Rect(1, 1, N, col1);
-                Rect rect2 = new Rect(1, col1 + 1, N, col2);
-                Rect rect3 = new Rect(1, col2 + 1, N, M);
- 
-                max = Math.max(max, getPreSum(rect1) * getPreSum(rect2) * getPreSum(rect3));
-            }
-        }
- 
-        //가로 3개
-        for (int row1 = 1; row1 <= N - 2; row1++) {
-            for (int row2 = row1 + 1; row2 <= N - 1; row2++) {
-                Rect rect1 = new Rect(1, 1, row1, M);
-                Rect rect2 = new Rect(row1 + 1, 1, row2, M);
-                Rect rect3 = new Rect(row2 + 1, 1, N, M);
- 
-                max = Math.max(max, getPreSum(rect1) * getPreSum(rect2) * getPreSum(rect3));
-            }
-        }
-        //왼1 오2
-        for (int row = 1; row < N; row++) {
-            for (int col = 1; col < M; col++) {
-                //왼1 오2
-                Rect rect1 = new Rect(1, 1, N, col);
-                Rect rect2 = new Rect(row + 1, col + 1, N, M);
-                Rect rect3 = new Rect(1, col + 1, row, M);
- 
-                max = Math.max(max, getPreSum(rect1) * getPreSum(rect2) * getPreSum(rect3));
- 
-                //왼2 오1
-                rect1 = new Rect(1, 1, row, col);
-                rect2 = new Rect(row + 1, 1, N, col);
-                rect3 = new Rect(1, col + 1, N, M);
- 
-                max = Math.max(max, getPreSum(rect1) * getPreSum(rect2) * getPreSum(rect3));
- 
-                //위1 아2
-                rect1 = new Rect(1, 1, row, M);
-                rect2 = new Rect(row + 1, 1, N, col);
-                rect3 = new Rect(row + 1, col + 1, N, M);
- 
-                max = Math.max(max, getPreSum(rect1) * getPreSum(rect2) * getPreSum(rect3));
- 
-                //위2 아1
-                rect1 = new Rect(1, 1, row, col);
-                rect2 = new Rect(1, col + 1, row, M);
-                rect3 = new Rect(row + 1, 1, N, M);
- 
-                max = Math.max(max, getPreSum(rect1) * getPreSum(rect2) * getPreSum(rect3));
-            }
-        }
- 
-        System.out.println(max);
+    public static void main(String[] args) throws IOException{
+    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    	st = new StringTokenizer(br.readLine());
+    	N = Integer.parseInt(st.nextToken());
+    	M = Integer.parseInt(st.nextToken());
+    	board = new int[N+1][M+1];
+    	pSum = new long[N+1][M+1];
+    	
+    	for(int y=1; y<=N; y++) {
+    		String line = br.readLine();
+    		for(int x=1; x<=M; x++) {
+    			board[y][x] = line.charAt(x-1) - '0';
+    			pSum[y][x] = pSum[y][x-1] + pSum[y-1][x] - pSum[y-1][x-1] + board[y][x];
+    		}
+    	}
+    	
+    	for(int x1=1; x1<= M-2; x1++) {
+    		for(int x2=x1+1; x2<= M-1; x2++) {
+    			Rec rec1 = new Rec(1,1, N, x1);
+    			Rec rec2 = new Rec(1,x1+1,N, x2);
+    			Rec rec3 = new Rec(1,x2+1,N, M);
+    			
+    			ans = Math.max(ans, rec1.calc() * rec2.calc() * rec3.calc());
+    		}
+    	}
+    	
+    	for(int y1=1; y1<=N-2; y1++) {
+    		for(int y2=y1+1; y2<=N-1; y2++) {
+    			Rec rec1 = new Rec(1,1,y1,M);
+    			Rec rec2 = new Rec(y1+1,1,y2,M);
+    			Rec rec3 = new Rec(y2+1,1,N,M);
+    			ans = Math.max(ans, rec1.calc() * rec2.calc() * rec3.calc());
+    		}
+    	}
+    	
+    	
+    	for(int y=1; y<N; y++) {
+    		for(int x=1; x<M; x++) {
+    			Rec rec1 = new Rec(1,1, N,x);
+    			Rec rec2 = new Rec(1,x+1,y,M);
+    			Rec rec3 = new Rec(y+1,x+1,N,M);
+    			
+    			ans = Math.max(ans, rec1.calc() * rec2.calc() * rec3.calc());
+    			
+    			
+    			rec1 = new Rec(1,1,y,x);
+    			rec2 = new Rec(y+1,1,N, x);
+    			rec3 = new Rec(1,x+1,N,M);
+    			ans = Math.max(ans, rec1.calc() * rec2.calc() * rec3.calc());
+    			
+    			rec1 = new Rec(1,1,y,x);
+    			rec2 = new Rec(1,x+1,y,M);
+    			rec3 = new Rec(y+1,1,N,M);
+    			ans = Math.max(ans, rec1.calc() * rec2.calc() * rec3.calc());
+    			
+    			rec1 = new Rec(1,1,y,M);
+    			rec2 = new Rec(y+1,1, N,x);
+    			rec3 = new Rec(y+1,x+1,N,M);
+    			ans = Math.max(ans, rec1.calc() * rec2.calc() * rec3.calc());
+    		}
+    	}
+    	
+    	System.out.println(ans);
+    	
     }
-	
-    //2차원 배열의 누적합을 구해주는 메소드
-    public static long getPreSum(Rect rect){
-        return preSum[rect.rightBottomRow][rect.rightBottomCol]
-                - preSum[rect.rightBottomRow][rect.leftTopCol-1]
-                - preSum[rect.leftTopRow-1][rect.rightBottomCol]
-                + preSum[rect.leftTopRow -1][rect.leftTopCol-1];
-    }
-}
-class Rect{
-    int leftTopRow;
-    int leftTopCol;
-    int rightBottomRow;
-    int rightBottomCol;
  
-    public Rect(int leftTopRow,int leftTopCol,int rightBottomRow,int rightBottomCol){
-        this.leftTopRow = leftTopRow;
-        this.leftTopCol = leftTopCol;
-        this.rightBottomRow = rightBottomRow;
-        this.rightBottomCol = rightBottomCol;
+    
+    static long ans;
+    static int N,M;
+    static int board[][];
+    static long pSum[][];
+    static StringTokenizer st;
+    static class Rec{
+    	int y1, x1, y2,x2;
+    	public Rec(int y1,int x1, int y2, int x2) {
+    		this.y1 = y1;
+    		this.x1 = x1;
+    		this.y2 = y2;
+    		this.x2 = x2;
+    	}
+    	
+    	long calc() {
+    		return pSum[y2][x2] - pSum[y1-1][x2] - pSum[y2][x1-1] + pSum[y1-1][x1-1];
+    	}
+    	
+    	public String toString() {
+    		return String.format("(%d, %d) (%d, %d)", y1,x1,y2,x2);
+    	}
     }
 }
