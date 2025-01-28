@@ -1,61 +1,51 @@
+import sys
 import heapq
-from collections import namedtuple
-INF = int(1e7)
-def decide(cost):
+from collections import defaultdict
+
+def main():
+    n, p, k = map(int, input().split())
+
+    adj = defaultdict(list)
+
+    for _ in range(p):
+        from_, to, cost = map(int, input().split())
+        adj[from_].append((to, cost))
+        adj[to].append((from_, cost))
+
+    left, right = 0, 1_000_000
+    ans = -1
+
+    while left <= right:
+        mid = (left + right) // 2
+        if decide(mid, adj, n, k):
+            ans = mid
+            right = mid - 1
+        else:
+            left = mid + 1
+
+    print(ans)
+
+def decide(x, adj, n, k):
+    INF = float('inf')
+    dist = [INF] * (n + 1)
+
     pq = []
-    dist = [INF for _ in range(N+1)]
-    heapq.heappush(pq, Edge(1, 0))
+    heapq.heappush(pq, (0, 1)) # (cost, node)
     dist[1] = 0
 
     while pq:
-        # print("pq: ",pq)
-        cur = heapq.heappop(pq)
+        cur_cost, cur_idx = heapq.heappop(pq)
 
-        if dist[cur.idx] < cur.cost:
+        if dist[cur_idx] < cur_cost:
             continue
 
-        for nxt in adj[cur.idx]:
-            temp = dist[cur.idx] + (1 if nxt.cost > cost else 0)
-            if dist[nxt.idx] > temp:
-                dist[nxt.idx] = temp
-                heapq.heappush(pq,Edge(nxt.idx, dist[nxt.idx]))
+        for nxt_idx, nxt_cost in adj[cur_idx]:
+            temp = dist[cur_idx] + (1 if nxt_cost > x else 0)
+            if dist[nxt_idx] > temp:
+                dist[nxt_idx] = temp
+                heapq.heappush(pq, (temp, nxt_idx))
 
-    # print(dist)
-    return dist[N] <= K
+    return dist[n] <= k
 
-
-
-class Edge:
-    def __init__(self, idx, cost):
-        self.idx = idx
-        self.cost = cost
-
-    def __lt__(self, o):
-        return self.cost < o.cost
-    def __repr__(self):
-        return f"idx: {self.idx} cost: {self.cost}"
-
-
-if __name__ == '__main__':
-    N,P,K = map(int, input().split())
-    adj = [[] for _ in range(N+1)]
-
-    for _ in range(P):
-        a, b, cost = map(int, input().split())
-        adj[a].append(Edge(b, cost))
-        adj[b].append(Edge(a, cost))
-
-    l = 0
-    r = int(1e6)
-    ret = -1
-    # print(decide(4))
-    while(l<=r):
-        mid = (l+r) // 2
-
-        if(decide(mid)):
-            r = mid - 1
-            ret = mid
-        else:
-            l = mid + 1
-
-    print(ret)
+if __name__ == "__main__":
+    main()
