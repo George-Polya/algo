@@ -1,5 +1,4 @@
-from collections import deque, namedtuple
-
+from collections import deque
 
 def printBoard(board):
     for y in range(1,N+1):
@@ -19,28 +18,26 @@ if __name__ == '__main__':
     dist = [[-1 for _ in range(M+1)] for _ in range(N+1) ]
 
     q = deque()
-    Pair = namedtuple('Pair', ['y', 'x'])
 
     for y in range(1, N+1):
         board[y] = [0] + list(map(int, input().split()))
         for x in range(1, M+1):
             if board[y][x] == 1:
-                q.append(Pair(y,x))
+                q.append((y, x))
                 dist[y][x] = 0
 
     ans = -1
     while q:
         cur = q.popleft()
-        # print(dist[cur.y][cur.x])
-        ans = max(ans, dist[cur.y][cur.x])
+        cy, cx = cur
+        ans = max(ans, dist[cy][cx])
         for dir in range(8):
-            ny = cur.y + dy[dir]
-            nx = cur.x + dx[dir]
+            ny = cy + dy[dir]
+            nx = cx + dx[dir]
 
             if OOB(ny,nx) or dist[ny][nx] != -1:
                 continue
-            dist[ny][nx] = dist[cur.y][cur.x] + 1
-            q.append(Pair(ny,nx))
-
+            dist[ny][nx] = dist[cy][cx] + 1
+            q.append((ny, nx))
 
     print(ans)
