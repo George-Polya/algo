@@ -28,10 +28,11 @@ if __name__ == '__main__':
                 q.append(Pair(y,x))
                 dist[y][x] = 0
 
-
+    ans = -1
     while q:
         cur = q.popleft()
-
+        # print(dist[cur.y][cur.x])
+        ans = max(ans, dist[cur.y][cur.x])
         for dir in range(8):
             ny = cur.y + dy[dir]
             nx = cur.x + dx[dir]
@@ -41,11 +42,5 @@ if __name__ == '__main__':
             dist[ny][nx] = dist[cur.y][cur.x] + 1
             q.append(Pair(ny,nx))
 
-    ans = -1
-    for y in range(1,N+1):
-        for x in range(1, M+1):
-            # print("%3d" % dist[y][x], end='')
-            ans = max(ans, dist[y][x])
-        # print()
 
     print(ans)
