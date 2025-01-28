@@ -1,5 +1,6 @@
 from heapq import heappop, heappush
-from collections import namedtuple
+# from collections import namedtuple
+# from typing import *
 
 class State:
     def __init__(self, idx, cost):
@@ -15,12 +16,12 @@ if __name__ == '__main__':
     INF = int(1e10)
     adj = [[] for _ in range(N+1)]
     dist = [ INF for _ in range(N+1)]
-    Edge = namedtuple('Edge', ('idx', 'cost'))
+    # Edge = namedtuple('Edge', ('idx', 'cost'))
     M = int(input())
     for _ in range(M):
         u,v,cost = map(int,input().split())
-        adj[u].append(Edge(v,cost))
-        adj[v].append(Edge(u, cost))
+        adj[u].append((v,cost))
+        adj[v].append((u, cost))
 
 
     dist[A] = dist[B] = dist[C] = 0
@@ -30,15 +31,16 @@ if __name__ == '__main__':
     heappush(pq, State(C, 0))
 
     while pq:
-        cur: State = heappop(pq)
+        cur = heappop(pq)
 
         if(dist[cur.idx] < cur.cost):
             continue
 
         for nxt in adj[cur.idx]:
-            if dist[nxt.idx] > dist[cur.idx] + nxt.cost:
-                dist[nxt.idx] = dist[cur.idx] + nxt.cost
-                heappush(pq, State(nxt.idx, dist[nxt.idx]))
+
+            if dist[nxt[0]] > dist[cur.idx] + nxt[1]:
+                dist[nxt[0]] = dist[cur.idx] + nxt[1]
+                heappush(pq, State(nxt[0], dist[nxt[0]]))
 
     _max = max(dist[1:])
 
