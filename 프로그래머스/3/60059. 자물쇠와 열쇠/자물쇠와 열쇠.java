@@ -32,7 +32,6 @@ class Solution {
     boolean check(int sy,int sx){
         int count = 0;
         
-        boolean ret = true;
         for(int y = sy; y < sy + m; y++){
             for(int x = sx; x<sx +m; x++){
                 if(board[y][x] == 1 && key[y-sy][x-sx] == 1)
