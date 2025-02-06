@@ -15,7 +15,7 @@ public class Main {
     	}
     	
     	int l = 0;
-    	int r = R-1;
+    	int r = R;
     	int ans = -1;
     	while(l<=r) {
     		int mid = (l+r)/2;
