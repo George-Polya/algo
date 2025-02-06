@@ -27,7 +27,7 @@ public class Main {
     			if(dist[e.from] == INF)
     				continue;
     			
-    			if(dist[e.to] < dist[e.from] + e.cost) {
+    			if(canUpdate(e)) {
     				prev[e.to] = e.from;
     				dist[e.to] = dist[e.from] + e.cost;
     			}
@@ -35,10 +35,10 @@ public class Main {
     	}
     	
     	for(Edge e : edges) {
-    		if(dist[e.from] == INF || dist[e.to] >= dist[e.from ] + e.cost)
+    		if(dist[e.from] == INF)
 				continue;
     		
-    		if(canReach(1,e.from) && canReach(e.from, N)) {
+    		if(canUpdate(e) && canReach(1,e.from) && canReach(e.from, N)) {
     			System.out.println(-1);
     			return;
     		}
@@ -84,6 +84,9 @@ public class Main {
     	return false;
     }
     
+    static boolean canUpdate(Edge e) {
+    	return dist[e.to] < dist[e.from] + e.cost;
+    }
     
     static int N,M;
     static StringTokenizer st;
