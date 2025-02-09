@@ -22,30 +22,21 @@ public class Main {
     			cooks.add(sum);
     		}
     	}
-    	int ans = INT_MAX;
     	dp = new int[N+1];
-    	ans = solve(N);
-    	System.out.println(ans == INT_MAX ? -1: ans);
+    	Arrays.fill(dp,INT_MAX);
     	
+    	dp[0] = 0;
+    	
+    	for(int i = 1; i<=N;i++) {
+    		for(int cook: cooks) {
+    			if(i - cook >=0 && dp[i-cook] != INT_MAX)
+    				dp[i] = Math.min(dp[i], dp[i-cook] + 1);
+    		}
+    	}
+    	
+    	System.out.println(dp[N] == INT_MAX ? -1 : dp[N]);
     }
     
-    static int solve(int food) {
-    	if(food < 0)
-    		return INT_MAX;
-    	
-    	if(food == 0)
-    		return 0;
-    	
-    	if(dp[food] != 0)
-    		return dp[food];
-    	
-    	int ret = INT_MAX;
-    	for(int cook : cooks) {
-    		if(food - cook >= 0)
-    			ret = Math.min(ret, solve(food - cook) + 1);
-    	}
-    	return dp[food] = ret;
-    }
     static int dp[];
     
     static int INT_MAX = Integer.MAX_VALUE / 2;
