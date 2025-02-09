@@ -1,51 +1,69 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    	
-    	n = Integer.parseInt(br.readLine());
-    	arr = new int[n+1][2];
-    	
-    	for(int i =1; i<=n; i++) {
+    	N = Integer.parseInt(br.readLine());
+    	arr = new Pair[N+1];
+    	dp = new int[N+1];
+    	for(int i = 1; i <= N; i++) {
     		st = new StringTokenizer(br.readLine());
-    		int a= Integer.parseInt(st.nextToken());
-    		int b= Integer.parseInt(st.nextToken());
-    		arr[i] = new int[] {a,b};
-    	}
-    	Arrays.sort(arr, 1,n+1,(o1, o2)->{
-    		return o1[0] - o2[0];
-    	});
-    	dp = new int[n+1][n+1];
-    	for(int row[] : dp) {
-    		Arrays.fill(row, -1);
+    		int a = Integer.parseInt(st.nextToken());
+    		int b = Integer.parseInt(st.nextToken());
+    		
+    		arr[i] = new Pair(a,b);
     	}
     	
-    	System.out.println(n - solve(1,0));
+    	Arrays.sort(arr, 1, N+1);
     	
+    	
+    	for(int i = 1; i<=N;i++) {
+    		ans = Math.max(ans, solve(i));
+    	}
+    	System.out.println(N - ans);
     }
     
-    static int solve(int cur, int last) {
-    	if(cur == n+1)
-    		return 0;
+    static int solve(int cur) {
+    	if(dp[cur] != 0)
+    		return dp[cur];
+    	int ret = 1;
     	
-    	if(dp[cur][last] != -1)
-    		return dp[cur][last];
+    	for(int i = 1; i< cur; i++) {
+    		if(check(arr[i], arr[cur]))
+    			ret = Math.max(ret, solve(i) + 1);
+    	}
     	
-    	int ret = solve(cur+1,last);
-    	
-    	if(arr[cur][1] > arr[last][1])
-    		ret = Math.max(ret, solve(cur+1, cur) + 1);
-    	
-    	return dp[cur][last] = ret;
-    			
+    	return dp[cur] = ret;
     }
-    	
     
-    static int n;
+    static boolean check(Pair prev, Pair cur) {
+    	return prev.b < cur.b;
+    }
+    
+    static int dp[];
+    
+    static int ans;
+    
+    static int N;
     static StringTokenizer st;
-    static int[] arr[];
-    static int dp[][];
+    
+    static Pair arr[];
+    
+    static class Pair implements Comparable<Pair>{
+    	int a, b;
+    	public Pair(int a, int b) {
+    		this.a = a;
+    		this.b = b;
+    				
+    	}
+    	
+    	public int compareTo(Pair o) {
+    		if( a != o.a)
+    			return a - o.a;
+    		return b - o.b;
+    	}
+    }
+    
 }
