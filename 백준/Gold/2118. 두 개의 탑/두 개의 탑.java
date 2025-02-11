@@ -2,37 +2,35 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
+
     public static void main(String[] args) throws IOException{
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    	N = Integer.parseInt(br.readLine());
-    	dist = new int[N];
-    	pSum = new int[2*N+1];
-
+    	n = Integer.parseInt(br.readLine());
+    	arr = new int[2*n];
     	int total = 0;
-    	for(int i = 0; i<N; i++) {
-    		dist[i] = Integer.parseInt(br.readLine());
-    		total += dist[i];
+    	for(int i = 0; i < n; i++) {
+    		arr[i] = Integer.parseInt(br.readLine());
+    		total += arr[i];
+    		arr[i + n] = arr[i];
     	}
-    	
-    	
-    	for(int i = 0; i < 2*N;i++) {
-    		pSum[i+1] = pSum[i] + dist[ i % N];
-    	}
-    	
-    	
-    	int e = 0;
+//    	System.out.println(Arrays.toString(arr));
+    	int r = 0;
+    	int sum = 0;
     	int ans = 0;
-    	for(int s = 0; s<N; s++) {
-    		while(e < s + N && pSum[e+1] - pSum[s] <= total/2)
-    			e++;
+    	for(int l = 0; l < 2 * n; l++) {
+    		while(r < 2 * n && sum + arr[r] <= total/2) {
+    			sum += arr[r];
+    			r++;
+    		}
     		
-    		ans = Math.max(ans, pSum[e] - pSum[s]);
+    		if(sum <= total/2) {
+    			ans = Math.max(ans,  Math.min(sum, total - sum));
+    		}
+    		
+    		sum -= arr[l];
     	}
     	System.out.println(ans);
-
     }
-    
-    static int N;
-    static int pSum[],dist[];
-    	
+    static int n;
+    static int arr[];
 }
