@@ -26,33 +26,22 @@ if __name__ == '__main__':
     mapA = init(A)
     mapB = init(B)
     # pprint(mapA)
-    # print(mapB)
-
-
+    # pprint(mapB)
     maxA = max(mapA.keys())
     maxB = max(mapB.keys())
     mapA[maxA] = 1
     mapB[maxB] = 1
+
     ans = 0
     for key, value in mapA.items():
         if key == target:
            ans += value
 
         if key < target and ((target - key) in mapB):
-            # print(f"key: {key}, target - key : {target-key}")
-            # ans += mapA[key] * mapB[target - key] if key != maxA and (target - key) != maxB else 1
-            
-            # print(f"mapA[{key}]: {mapA[key]}, mapB[{target}-{key}]: {mapB[target - key]}")
-            ans += mapA[key] * mapB[target-key]
-
-
+            ans += mapA[key] * mapB[target - key]
 
     for key, value in mapB.items():
         if key == target:
             ans += value
-
-    # print(maxA, maxB)
-    # if(target == maxA + maxB):
-    #     ans += mapA[maxA] * mapB[maxB]
 
     print(ans)
