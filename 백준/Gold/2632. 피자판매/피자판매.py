@@ -35,22 +35,21 @@ if __name__ == '__main__':
     mapB[maxB] = 1
     ans = 0
     for key, value in mapA.items():
+        if key == target:
+           ans += value
 
         if key < target and ((target - key) in mapB):
             # print(f"key: {key}, target - key : {target-key}")
             # ans += mapA[key] * mapB[target - key] if key != maxA and (target - key) != maxB else 1
-            # print(f"mapA[{key}]: {mapA[key]}, mapB[{target-key}]: {mapB[target - key]}")
-
+            
+            # print(f"mapA[{key}]: {mapA[key]}, mapB[{target}-{key}]: {mapB[target - key]}")
             ans += mapA[key] * mapB[target-key]
 
 
 
-    if target in mapA:
-        ans += mapA[target]
-
-    if target in mapB:
-        ans += mapB[target]
-
+    for key, value in mapB.items():
+        if key == target:
+            ans += value
 
     # print(maxA, maxB)
     # if(target == maxA + maxB):
