@@ -18,7 +18,7 @@ if __name__ == '__main__':
     dp[0] = 0
     for i in range(1, N+1):
         for k in range(K, 0, -1):
-            if k - weights[i] >= 0 and dp[k-weights[i]] != INT_MIN:
+            if k - weights[i] >= 0:
                 dp[k] = max(dp[k], dp[k-weights[i]] + values[i])
 
     ans = INT_MIN
