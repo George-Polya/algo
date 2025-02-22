@@ -74,7 +74,7 @@ public class Main {
     		if (qLeft <= left && right <= qRight) {
     			lazyExist[cur] = true;
     			lazyValue[cur] += value;
-    			tree[cur] += value * (qRight - qLeft + 1);
+    			tree[cur] += value * (right - left + 1);
     			return;
     		}
     		
