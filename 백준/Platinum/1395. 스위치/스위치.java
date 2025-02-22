@@ -1,69 +1,87 @@
+import java.util.*;
 import java.io.*;
-import java.util.StringTokenizer;
 
 public class Main {
-
-    static int[] tree, lazy;
-    static int n;
+    static StringTokenizer st;
+    static int N, M;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-
-        tree = new int[4 * n];
-        lazy = new int[4 * n];
+        SegTree seg = new SegTree(N);
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < m; i++) {
+        
+        for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-            int op = Integer.parseInt(st.nextToken());
+            int cmd = Integer.parseInt(st.nextToken());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-            if (op == 0) {
-                update(1, n, 1, a, b);
+
+            if (cmd == 0) {
+                seg.update(1, 0, N - 1, a - 1, b - 1);  // ✅ 인덱스 보정
             } else {
-                sb.append(pSum(1, n, 1, a, b)).append("\n");
+                sb.append(seg.query(1, 0, N - 1, a - 1, b - 1)).append('\n');  // ✅ 인덱스 보정
             }
         }
-        System.out.print(sb.toString());
+        System.out.println(sb);
     }
 
-    static void propagate(int s, int e, int node) {
-        if (lazy[node] % 2 == 1) {
-            if (s != e) {
-                lazy[node * 2] += lazy[node];
-                lazy[node * 2 + 1] += lazy[node];
+    static class SegTree {
+        int size;
+        int[] tree;
+        boolean[] lazy;  // ✅ lazy를 boolean 배열로 변경
+
+        public SegTree(int n) {
+            int h = (int) Math.ceil(Math.log(n) / Math.log(2));
+            size = (1 << (h + 1));
+            tree = new int[size];
+            lazy = new boolean[size];  // ✅ 초기값 false
+        }
+
+        public void update(int cur, int left, int right, int qLeft, int qRight) {
+            propagate(cur, left, right);  // ✅ 갱신 전 lazy 처리
+
+            if (qRight < left || qLeft > right) return;  // ✅ 범위 밖이면 리턴
+
+            if (qLeft <= left && right <= qRight) {
+                lazy[cur] ^= true;  // ✅ 반전 처리
+                propagate(cur, left, right);  // ✅ 변경 즉시 반영
+                return;
             }
-            tree[node] = (e - s + 1) - tree[node];
-            lazy[node] = 0;
-        }
-    }
 
-    static void update(int s, int e, int node, int l, int r) {
-        propagate(s, e, node);
-        if (e < l || r < s) return;
-        if (l <= s && e <= r) {
-            lazy[node]++;
-            propagate(s, e, node);
-            return;
+            int mid = (left + right) / 2;
+            update(cur * 2, left, mid, qLeft, qRight);
+            update(cur * 2 + 1, mid + 1, right, qLeft, qRight);
+            tree[cur] = tree[cur * 2] + tree[cur * 2 + 1];  // ✅ 자식 값 갱신
         }
 
-        int mid = (s + e) / 2;
-        update(s, mid, node * 2, l, r);
-        update(mid + 1, e, node * 2 + 1, l, r);
-        tree[node] = tree[node * 2] + tree[node * 2 + 1];
-    }
+        private void propagate(int cur, int left, int right) {
+            if (!lazy[cur]) return;  // ✅ lazy가 없으면 리턴
 
-    static int pSum(int s, int e, int node, int l, int r) {
-        propagate(s, e, node);
-        if (e < l || r < s) return 0;
-        if (l <= s && e <= r) {
-            return tree[node];
+            tree[cur] = (right - left + 1) - tree[cur];  // ✅ 전체 반전
+
+            if (left != right) {  // ✅ 리프 노드가 아닐 때
+                lazy[cur * 2] ^= true;
+                lazy[cur * 2 + 1] ^= true;
+            }
+
+            lazy[cur] = false;  // ✅ 현재 노드의 lazy 해제
         }
 
-        int mid = (s + e) / 2;
-        return pSum(s, mid, node * 2, l, r) + pSum(mid + 1, e, node * 2 + 1, l, r);
+        public int query(int cur, int left, int right, int qLeft, int qRight) {
+            propagate(cur, left, right);  // ✅ 쿼리 전 lazy 처리
+
+            if (qRight < left || qLeft > right) return 0;  // ✅ 범위 벗어나면 리턴
+
+            if (qLeft <= left && right <= qRight) return tree[cur];  // ✅ 완전 포함 시 반환
+
+            int mid = (left + right) / 2;
+            int leftValue = query(cur * 2, left, mid, qLeft, qRight);
+            int rightValue = query(cur * 2 + 1, mid + 1, right, qLeft, qRight);
+            return leftValue + rightValue;
+        }
     }
 }
