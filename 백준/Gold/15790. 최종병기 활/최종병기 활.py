@@ -27,28 +27,22 @@ if __name__ == '__main__':
     arr = []
     for i in range(M):
         arr.append(int(input()))
-        
+
     if K == 1:
         print(N)
         exit()
 
-    lengths = set()
-    for i in range(M):
-        for j in range(i+1, M):
-            lengths.add(abs(arr[i] - arr[j]))
-    
-    lengths = sorted(list(lengths))
-    # print(lengths)
 
-    l = 0
-    r = len(lengths) - 1
+
+    l = 1
+    r = N
     ret = -1
 
     while l<=r :
         mid = (l + r) // 2
-        if decide(lengths[mid]):
+        if decide(mid):
             l = mid + 1
-            ret = lengths[mid]
+            ret = mid
 
         else:
             r = mid - 1
