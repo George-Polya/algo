@@ -1,22 +1,21 @@
-from operator import truediv
+def check(start, len):
+    cur = start
 
-
-def check(cur, sz, f) -> bool:
     i = (cur + 1) % M
     cnt = 1
-    while i != f:
-        if (arr[i] - arr[cur] + N) % N >= sz:
+    while i != start:
+        if (arr[i] - arr[cur] + N) % N >= len:
             cur = i
             cnt += 1
             if cnt == K:
-                return (arr[f] - arr[cur] + N) % N >= sz
+                return (arr[start] - arr[cur] + N) % N >= len
 
         i = (i + 1) % M
 
     return False
 def decide(len):
     for i in range(M):
-        if(check(i,len, i)):
+        if(check(i,len)):
             return True
     return False
 
@@ -31,8 +30,6 @@ if __name__ == '__main__':
     if K == 1:
         print(N)
         exit()
-
-
 
     l = 1
     r = N
