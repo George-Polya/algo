@@ -28,7 +28,7 @@ def lower_bound(arr, target):
     return ret
 if __name__ == '__main__':
     N = int(input())
-    lines = []
+    lines = [Line(-1,-1,-1)]
     for i in range(1,N+1):
         a,b = map(int,input().split())
         lines.append(Line(i, a,b))
@@ -37,12 +37,13 @@ if __name__ == '__main__':
     # print(lines)
     # path = [0 for _ in range(N + 1)]
 
-    dp = []
+    dp = [lines[1]]
     trace = [-1] * (N+1)
+    trace[1] = 0
     # print(dp)
     # print('----')
-    for i in range(N):
-        if not dp or lines[i].b > dp[-1].b:
+    for i in range(2, N+1):
+        if lines[i].b > dp[-1].b:
             dp.append(lines[i])
             trace[i] = len(dp) - 1
         else:
@@ -55,11 +56,11 @@ if __name__ == '__main__':
 
 
     print(N - len(dp))
-
+    # print(trace)
     ans = []
     length = len(dp) - 1
 
-    for i in range(N - 1, -1, -1):
+    for i in range(N, 0, -1):
         if trace[i] == length:
             length -= 1
         else:
