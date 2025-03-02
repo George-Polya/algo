@@ -1,113 +1,84 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException{
-    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    	board = new int[3][3];
-    	sy = sx = -1;
-    	int tmp[][] = new int[3][3];
-    	for(int y=0; y<3; y++) {
-    		st = new StringTokenizer(br.readLine());
-    		for(int x =0 ; x<3; x++) {
-    			board[y][x] = Integer.parseInt(st.nextToken());
-    			tmp[y][x] = board[y][x];
-    			if(board[y][x] == 0) {
-    				sy = y;
-    				sx = x;
-    			}
-    				
-    		}
-    			
-    	}
-    	
-    	State start = new State(sy,sx, board);
-    	Queue<State> q = new ArrayDeque<>();
-    	Map<State, Integer> visited = new HashMap<>();
-    	q.add(start);
-    	visited.put(start, 0);
-    	
-    	while(!q.isEmpty()) {
-    		State cur = q.poll();
-    		
-    		for(int dir = 0; dir < 4; dir++) {
-    			int ny = cur.y + dy[dir];
-    			int nx = cur.x + dx[dir];
-    			
-    			if(OOB(ny,nx))
-    				continue;
-    			
-    			State nxt = swap(cur.y, cur.x, ny,nx, cur.board);
-    			if(visited.containsKey(nxt))
-    				continue;
-    			
-    			visited.put(nxt, visited.get(cur) + 1);
-    			q.add(nxt);
-    		}
-    	}
-    	
-    	int temp[][] = new int[3][3];
-    	for(int y=0;y<3; y++) {
-    		for(int x=0; x<3; x++) {
-    			temp[y][x] = y * 3 + x + 1;
-    		}
-    	}
-    	temp[2][2] = 0;
-    	State end = new State(2,2,temp);
-    	System.out.println(visited.getOrDefault(end, -1));
+    static int[] dy = {-1, 1, 0, 0};
+    static int[] dx = {0, 0, -1, 1};
+
+    static boolean OOB(int y, int x) {
+        return y < 0 || y >= 3 || x < 0 || x >= 3;
     }
-    
-    static State swap(int curY, int curX, int ny, int nx, int board[][]) {
-    	int ret[][] = new int[3][3];
-    	for(int y=0;y <3; y++) {
-    		for(int x = 0; x< 3; x++) {
-    			ret[y][x] = board[y][x];
-    		}
-    	}
-    	
-    	int temp = board[ny][nx];
-    	ret[ny][nx] = 0;
-    	ret[curY][curX] = temp;
-    	
-    	return new State(ny,nx, ret);
+
+    static String swap(int curY, int curX, int ny, int nx, String board) {
+        char[] boardChars = board.toCharArray();
+        int curIdx = curY * 3 + curX;
+        int nxtIdx = ny * 3 + nx;
+        char temp = boardChars[curIdx];
+        boardChars[curIdx] = boardChars[nxtIdx];
+        boardChars[nxtIdx] = temp;
+        return new String(boardChars);
     }
-    
-    static int dy[] = {-1,1,0,0};
-    static int dx[] = {0,0,-1,1};
-    static boolean OOB(int y,int x) {
-    	return y<0 || y>=3 || x<0 || x>=3;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        int sy = -1, sx = -1;
+
+        for (int y = 0; y < 3; y++) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            for (int x = 0; x < 3; x++) {
+                String s = st.nextToken();
+                sb.append(s);
+                if (s.equals("0")) {
+                    sy = y;
+                    sx = x;
+                }
+            }
+        }
+
+        String start = sb.toString();
+        Queue<State> q = new ArrayDeque<>();
+        Set<String> visited = new HashSet<>(); // String을 저장하는 Set
+        Map<String, Integer> dist = new HashMap<>(); // 거리를 저장하는 Map
+
+        q.add(new State(sy, sx, start));
+        visited.add(start);
+        dist.put(start, 0);
+
+        while (!q.isEmpty()) {
+            State cur = q.poll();
+
+            if (cur.board.equals("123456780")) {
+                System.out.println(dist.get(cur.board));
+                return;
+            }
+
+            for (int dir = 0; dir < 4; dir++) {
+                int ny = cur.y + dy[dir];
+                int nx = cur.x + dx[dir];
+
+                if (OOB(ny, nx)) continue;
+
+                String nxtBoard = swap(cur.y, cur.x, ny, nx, cur.board);
+                if (visited.contains(nxtBoard)) continue;
+
+                visited.add(nxtBoard);
+                dist.put(nxtBoard, dist.get(cur.board) + 1);
+                q.add(new State(ny, nx, nxtBoard));
+            }
+        }
+
+        System.out.println(-1);
     }
-    
-    static int board[][];
-    static int sy, sx;
-    static StringTokenizer st;
-    static class State{
-    	int y,x;
-    	int board[][];
-    	
-    	public State(int y, int x, int board[][]) {
-    		this.y = y;
-    		this.x = x;
-    		this.board = board;
-    	}
-    	
-    	public boolean equals(Object o) {
-    		if(this == o)
-    			return true;
-    		
-    		if(o == null || getClass()!=o.getClass())
-    			return false;
-    		
-    		State tmp = (State)o;
-    		return Arrays.deepEquals(board, tmp.board);
-    		
-    	}
-    	
-    	public int hashCode() {
-    		return Arrays.deepHashCode(board);
-    	}
-    	
+     static class State {
+        int y, x;
+        String board; // 문자열로 변경
+
+        public State(int y, int x, String board) {
+            this.y = y;
+            this.x = x;
+            this.board = board;
+        }
     }
-    
 }
