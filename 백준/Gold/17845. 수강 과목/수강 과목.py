@@ -8,14 +8,13 @@ if __name__ == '__main__':
         times.append(T)
 
     INF = -float('inf')
-    dp = [ [INF] * (N+1) for _ in range(K+1)]
-    dp[0][0] = 0
+    dp = [INF] * (N+1)
+    dp[0] = 0
     ans = 0
     for i in range(1, K+1):
-        for t in range(N+1):
-            dp[i][t] = dp[i-1][t]
-            if t - times[i] >= 0 and dp[i-1][t-times[i]] != INF:
-                dp[i][t] = max(dp[i][t], dp[i-1][t - times[i]] + importances[i])
-                ans = max(ans, dp[i][t])
+        for t in range(N, 0, -1):
+            if t - times[i] >=0 and dp[t-times[i]] != INF:
+                dp[t] = max(dp[t], dp[t-times[i]] + importances[i])
+                ans = max(ans,dp[t])
 
     print(ans)
