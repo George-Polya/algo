@@ -10,8 +10,10 @@ if __name__ == '__main__':
     # print(diff)
     diff.sort()
 
-    ans = 0
-    for i in range(len(diff) - (K-1)):
-        ans += diff[i]
+    # ans = 0
+    # for i in range(len(diff) - (K-1)):
+    #     ans += diff[i]
+    #
+    # print(ans)
 
-    print(ans)
+    print(sum(diff[:N-K]))
