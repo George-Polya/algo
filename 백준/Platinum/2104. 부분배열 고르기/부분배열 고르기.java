@@ -1,103 +1,68 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+import java.util.Stack;
 
 public class Main {
-    public static void main(String[] args) throws IOException{
+
+    static int n;
+    static int[] a; // 입력 배열 (1-based index)
+    static long[] prefixSum; // 누적 합 배열 (1-based index)
+
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine());
-        arr = new int[N + 1];
-        pSum = new long[N+1];
-        st = new StringTokenizer(br.readLine());
-        for(int i = 1; i <= N; i++) {
-        	arr[i] = Integer.parseInt(st.nextToken());
-        	pSum[i] = pSum[i-1] + arr[i];
+        n = Integer.parseInt(br.readLine());
+
+        a = new int[n + 1];
+        prefixSum = new long[n + 1];
+
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int i = 1; i <= n; i++) {
+            a[i] = Integer.parseInt(st.nextToken());
+            prefixSum[i] = prefixSum[i - 1] + a[i];
         }
-        
-        segTree = new SegTree(arr);
-        System.out.println(solve(1,N));
+
+        Stack<Integer> stack = new Stack<>();
+        long maxScore = 0;
+
+        // 각 원소 A[i]에 대해 오른쪽 경계(R)를 찾으면서 최대 점수 계산
+        for (int i = 1; i <= n; i++) {
+            // 스택의 top에 있는 원소보다 현재 원소 A[i]가 작거나 같으면
+            // 스택 top 원소의 오른쪽 경계는 i가 된다.
+            while (!stack.isEmpty() && a[stack.peek()] >= a[i]) {
+                int heightIndex = stack.pop(); // 현재 처리할 막대의 인덱스 (k)
+                int height = a[heightIndex];   // A[k]
+
+                // 왼쪽 경계(L) 찾기: 스택이 비어있으면 0, 아니면 스택의 새로운 top 인덱스
+                int leftBoundary = stack.isEmpty() ? 0 : stack.peek();
+
+                // 오른쪽 경계(R)는 현재 인덱스 i
+                int rightBoundary = i;
+
+                // 구간 [L+1, R-1]의 합 계산
+                // 구간 [leftBoundary + 1, rightBoundary - 1]
+                long currentSum = prefixSum[rightBoundary - 1] - prefixSum[leftBoundary];
+
+                // 점수 계산 및 최대값 업데이트
+                maxScore = Math.max(maxScore, currentSum * height);
+            }
+            // 현재 인덱스를 스택에 push
+            stack.push(i);
+        }
+
+        // 스택에 남아있는 원소들 처리 (오른쪽 경계는 N+1)
+        while (!stack.isEmpty()) {
+            int heightIndex = stack.pop();
+            int height = a[heightIndex];
+
+            int leftBoundary = stack.isEmpty() ? 0 : stack.peek();
+            int rightBoundary = n + 1; // 오른쪽 끝까지 확장 가능
+
+            long currentSum = prefixSum[rightBoundary - 1] - prefixSum[leftBoundary];
+            maxScore = Math.max(maxScore, currentSum * height);
+        }
+
+        System.out.println(maxScore);
     }
-    static int N;
-    static int arr[];
-    static long pSum[];
-    static StringTokenizer st;
-    static SegTree segTree; 
-    
-    static long solve(int left, int right) {
-    	if(left > right)
-    		return 0;
-    	
-    	if(left == right) {
-    		return (long) arr[left] * arr[left];
-    	}
-    	
-    	MinInfo minInfo = segTree.query(1, 1, N, left, right);
-    	int minIdx = minInfo.idx;
-    	int minValue = minInfo.value;
-    	
-    	long midSum = pSum[right] - pSum[left - 1];
-    	long midScore = midSum * minValue;
-    	
-    	long leftScore = solve(left, minIdx - 1);
-    	long rightScore = solve(minIdx + 1, right);
-    	
-    	return Math.max(midScore, Math.max(leftScore, rightScore));
-    }
-    
-    static class MinInfo{
-    	int value, idx;
-    	public MinInfo(int value, int idx) {
-    		this.value = value;
-    		this.idx = idx;
-    	}
-    }
-    
-    static class SegTree{
-    	MinInfo minTree[];
-    	boolean isLazy[];
-    	
-    	public SegTree(int arr[]) {
-    		int h = (int)(Math.ceil(Math.log(N) / Math.log(2)));
-    		int size = 1 << (h + 1);
-    		minTree = new MinInfo[size];
-    		build(1, 1, N);
-    	}
-    	
-    	private void build(int cur, int left, int right) {
-    		if(left == right) {
-    			minTree[cur] = new MinInfo(arr[left], left);
-    			return;
-    		}
-    		
-    		int mid = (left + right) / 2;
-    		build(cur * 2, left, mid);
-    		build(cur * 2 + 1, mid + 1, right);
-    		
-    		if(minTree[cur*2].value <= minTree[cur * 2 + 1].value)
-    			minTree[cur] = minTree[cur * 2];
-    		else
-    			minTree[cur] = minTree[cur * 2 + 1];
-    	}
-    	
-    	public MinInfo query(int cur, int left, int right, int qLeft, int qRight) {
-    		
-    		if(qRight < left || right < qLeft)
-    			return new MinInfo(INF, -1);
-    		
-    		if(qLeft <= left && right <= qRight) {
-    			return minTree[cur];
-    		}
-    		
-    		int mid = (left + right ) / 2;
-    		MinInfo leftInfo = query(cur * 2, left, mid, qLeft, qRight);
-    		MinInfo rightInfo = query(cur * 2 + 1, mid + 1, right ,qLeft, qRight);
-    		if(leftInfo.value <= rightInfo.value)
-    			return leftInfo;
-    		else
-    			return rightInfo;
-    	}
-    	
-   
-    	
-    }
-    static int INF = Integer.MAX_VALUE / 2;
 }
