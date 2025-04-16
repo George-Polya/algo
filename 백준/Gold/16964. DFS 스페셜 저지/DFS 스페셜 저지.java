@@ -33,7 +33,7 @@ public class Main {
         }
         
         for(int i = 1; i<=N;i++) {
-        	Collections.sort(adj[i], (u,v)->Integer.compare(order[u], order[v]));
+        	Collections.sort(adj[i], (u,v)->order[u] - order[v]);
         }
         visited = new boolean[N+1];
         dfs(1);
