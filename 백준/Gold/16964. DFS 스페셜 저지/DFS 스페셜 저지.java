@@ -38,18 +38,18 @@ public class Main {
         visited = new boolean[N+1];
         dfs(1);
         
-        boolean check = true;
-        if(result.size() != N)
-        	check = false;
-        else {
-        	for(int i = 0; i<N;i++) {
-        		if(result.get(i) != sequence[i+1]) {
-        			check = false;
-        			break;
-        		}
-        	}
-        }
-        System.out.println(check ? 1 : 0);
+        
+        System.out.println(check() ? 1 : 0);
+    }
+    static boolean check() {
+    	if(result.size() != N)
+    		return false;
+    	
+    	for(int i = 0; i<N; i++) {
+    		if(result.get(i) != sequence[i+1])
+    			return false;
+    	}
+    	return true;
     }
     static void dfs(int cur) {
     	visited[cur] = true;
