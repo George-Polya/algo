@@ -18,7 +18,7 @@ if __name__ == "__main__":
                 second = heappop(pq)
                 nxt = first * second
                 cost = nxt % MOD
-                total = (total * nxt) % MOD
+                total = (total * cost) % MOD
                 heappush(pq, nxt)
 
         ans.append(total)
