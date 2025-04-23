@@ -1,41 +1,41 @@
 from collections import deque, namedtuple
 
-def getNxts(cur):
-    ret = []
-    a = cur.a
-    b = cur.b
-    c = cur.c
+def makeState(a,b,c):
+    return str(a)+"#"+str(b)+"#"+str(c)
 
+def getNxts(a,b,c):
+    ret = []
     if a > b:
-        ret.append(State(a-b,b+b,c))
+        ret.append(makeState(a-b,b+b,c))
+
     if a < b:
-        ret.append(State(a+a,b-a,c))
+        ret.append(makeState(a + a, b - a, c))
 
     if b > c:
-        ret.append(State(a,b-c,c+c))
+        ret.append(makeState(a, b - c, c + c))
     if b < c:
-        ret.append(State(a,b+b,c-b))
+        ret.append(makeState(a, b + b, c - b))
 
     if c > a:
-        ret.append(State(a+a,b,c-a))
+        ret.append(makeState(a + a, b, c - a))
     if c < a:
-        ret.append(State(a-c,b,c+c))
+        ret.append(makeState(a - c, b, c + c))
 
     return ret
 
-
 def solve(a,b,c):
-    state = State(a,b,c)
+    state = makeState(a,b,c)
     q = deque([state])
     visited = set()
     visited.add(state)
 
     while q:
         cur = q.popleft()
-        if(cur.a == cur.b == cur.c):
+        a,b,c = map(int, cur.split("#"))
+        if a == b == c:
             return True
 
-        for nxt in getNxts(cur):
+        for nxt in getNxts(a,b,c):
             if nxt in visited:
                 continue
             visited.add(nxt)
