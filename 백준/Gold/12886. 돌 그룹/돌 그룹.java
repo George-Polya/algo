@@ -12,18 +12,32 @@ public class Main {
         System.out.println(solve(A,B,C) ? 1 : 0);
     }
     
+    static int[] parse(String str) {
+    	st = new StringTokenizer(str,"#");
+    	int a = Integer.parseInt(st.nextToken());
+    	int b = Integer.parseInt(st.nextToken());
+    	int c = Integer.parseInt(st.nextToken());
+    	return new int[] {a,b,c};
+    }
+    
     static boolean solve(int a, int b, int c) {
-    	Queue<Tuple> q = new ArrayDeque<>();
-    	Tuple tuple = new Tuple(a,b,c);
-    	visited.add(tuple);
-    	q.add(tuple);
+    	Queue<String> q = new ArrayDeque<>();
+    	Set<String> visited =  new HashSet<>();
+    	String state = makeState(a,b,c);
+    	visited.add(state);
+    	q.add(state);
     	
     	while(!q.isEmpty()) {
-    		Tuple cur = q.poll();
-    		if(cur.a == cur.b && cur.b == cur.c)
+    		String cur = q.poll();
+    		int parsed[] = parse(cur);
+    		
+    		a = parsed[0];
+    		b = parsed[1];
+    		c = parsed[2];
+    		if(a == b && b == c)
     			return true;
     		
-    		for(Tuple nxt : getNxts(cur)) {
+    		for(String nxt : getNxts(parsed[0], parsed[1], parsed[2])) {
     			if(visited.contains(nxt))
     				continue;
     			visited.add(nxt);
@@ -34,58 +48,33 @@ public class Main {
     	return false;
     }
     
-    static List<Tuple> getNxts(Tuple cur){
-    	List<Tuple> ret = new ArrayList<>();
-    	int a = cur.a;
-    	int b = cur.b;
-    	int c = cur.c;
+    static String makeState(int a, int b,int c) {
+    	return a+"#"+b+"#"+c;
+    }
+    
+    static List<String> getNxts(int a,int b, int c){
+    	List<String> ret = new ArrayList<>();
     	
     	if(a > b)
-    		ret.add(new Tuple(a-b, b+b, c));
+    		ret.add(makeState(a-b, b+b, c));
     	if(a < b)
-    		ret.add(new Tuple(a+a,b-a,c));
+    		ret.add(makeState(a+a,b-a,c));
     	
     	if(b > c)
-    		ret.add(new Tuple(a,b-c,c+c));
+    		ret.add(makeState(a,b-c,c+c));
     	if(b < c)
-    		ret.add(new Tuple(a,b+b,c-b));
+    		ret.add(makeState(a,b+b,c-b));
     	
     	if(c > a)
-    		ret.add(new Tuple(a+a,b,c-a));
+    		ret.add(makeState(a+a,b,c-a));
     	if(c < a)
-    		ret.add(new Tuple(a-c,b,c+c));
+    		ret.add(makeState(a-c,b,c+c));
     	
     	return ret;
     	
     }
     
-    static class Tuple{
-    	int a,b,c;
-    	
-    	public Tuple(int a,int b, int c) {
-    		this.a = a;
-    		this.b = b;
-    		this.c = c;
-    	}
-    	
-    	public boolean equals(Object o) {
-    		if(this == o)
-    			return true;
-    		
-    		if(o == null)
-    			return false;
-    		if(getClass() != o.getClass())
-    			return false;
-    		
-    		Tuple t = (Tuple)o;
-    		return this.a == t.a && this.b == t.b && this.c == t.c;
-    	}
-    	
-    	public int hashCode() {
-    		return Objects.hash(a,b,c);
-    	}
-    }
-    static Set<Tuple> visited = new HashSet<>();
+
     static StringTokenizer st;
     static int A,B,C;
 }
