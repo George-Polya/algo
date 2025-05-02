@@ -10,18 +10,19 @@ public class Main {
     static int n, c;
     static int arr[];
 
-    static boolean check(int dist) {
-        int limit = -1;
-        int cnt = 0;
-        for (int i = 1; i <= n; i++) {
-            if (limit <= arr[i]) {
-                limit = dist + arr[i];
+      static boolean check(int dist) {
+        int cnt = 1;
+        int cur = arr[1];
+        for (int i = 2; i <= n; i++) {
+            if (cur + dist <= arr[i]) {
                 cnt += 1;
+                cur = arr[i];
             }
         }
 
         return c <= cnt;
     }
+
 
     static int lower_bound(int arr[], int target) {
         int st = 1, en = 1000000000;
