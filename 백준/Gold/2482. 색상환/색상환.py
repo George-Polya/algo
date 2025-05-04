@@ -14,13 +14,8 @@ if __name__ == '__main__':
         for j in range(2, K+1):
             dp[i][j] = (dp[i-1][j] + dp[i-2][j-1]) % MOD
 
-    result = None
 
-    if K == 1:
-        result = N
-    elif K * 2 > N:
-        result = 0
-    else:
-        result = (dp[N-1][K] + dp[N-3][K-1]) % MOD
+
+    result = (dp[N-1][K] + dp[N-3][K-1]) % MOD
 
     print(result)
