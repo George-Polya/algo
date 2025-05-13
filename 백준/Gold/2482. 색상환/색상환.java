@@ -8,21 +8,6 @@ public class Main {
         N = Integer.parseInt(br.readLine());
         K = Integer.parseInt(br.readLine());
         
-//        
-//        if(K == 0) {
-//        	System.out.println(1);
-//        	return;
-//        }
-//        	
-//        if(K == 1) {
-//        	System.out.println(N);
-//        	return;
-//        }
-//        
-//        if(K > N / 2) {
-//        	System.out.println(0);
-//        	return;
-//        }
         dp = new long[N+1][K+1];
         for(long row[] : dp) {
         	Arrays.fill(row, -1);
@@ -40,14 +25,14 @@ public class Main {
     	if(cnt == 0)
     		return 1;
     	
-    	if(cur <= 0 )
+    	if(cur <= 0 || cur < cnt)
     		return 0;
     	
     	if(cnt == 1)
     		return cur;
     	
-    	if(cur < cnt)
-    		return 0;
+//    	if(cur < cnt)
+//    		return 0;
     	
     	if(dp[cur][cnt ] != -1)
     		return dp[cur][cnt];
