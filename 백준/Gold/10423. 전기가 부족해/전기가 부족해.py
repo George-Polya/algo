@@ -49,9 +49,9 @@ if __name__ == "__main__":
 
         if A not in installed:
             uf[A] = B
-            ans += cost
+        
         else:
             uf[B] = A
-            ans += cost
+        ans += cost
     # print(uf)
     print(ans)
