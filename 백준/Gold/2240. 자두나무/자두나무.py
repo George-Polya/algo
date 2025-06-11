@@ -2,11 +2,12 @@ from collections import defaultdict
 
 
 def solve(idx, cnt):
-    if cnt > W:
-        return -float('inf')
 
     if idx > T:
         return 0
+    if cnt > W:
+        return -float('inf')
+
 
     if (idx, cnt) in dp:
         return dp[(idx,cnt)]
