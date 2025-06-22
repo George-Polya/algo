@@ -1,32 +1,31 @@
-from collections import defaultdict
 
-
-def solve(idx, cnt):
-
-    if idx > T:
+def solve(cur, cnt):
+    if cur > T:
         return 0
+
     if cnt > W:
         return -float('inf')
 
-
-    if (idx, cnt) in dp:
-        return dp[(idx,cnt)]
+    if (cur, cnt) in dp:
+        return dp[(cur, cnt)]
 
     pos = cnt % 2 + 1
 
-    plum = 1 if pos == arr[idx] else 0
+    plus = 1 if arr[cur] == pos else 0
+    temp1 = solve(cur + 1, cnt + 1)
 
-    dp[(idx,cnt)] = max(solve(idx + 1, cnt), solve(idx + 1, cnt + 1)) + plum
-    return dp[(idx,cnt)]
+    temp2 = solve(cur + 1, cnt)
+    ret = max(temp1, temp2) + plus
+    dp[(cur, cnt)] = ret
+
+    return ret
 
 if __name__ == "__main__":
     T,W = map(int,input().split())
     arr = [0]
-
+    dp = dict()
     for _ in range(T):
         arr.append(int(input()))
-
-    dp = defaultdict(int)
-
+    # print(arr)
 
     print(max(solve(1,0), solve(1,1)))
