@@ -1,6 +1,6 @@
 
 def solve(cur, cnt):
-    if cur > T:
+    if cur >= T:
         return 0
 
     if cnt > W:
@@ -22,10 +22,10 @@ def solve(cur, cnt):
 
 if __name__ == "__main__":
     T,W = map(int,input().split())
-    arr = [0]
+    arr = []
     dp = dict()
     for _ in range(T):
         arr.append(int(input()))
     # print(arr)
 
-    print(max(solve(1,0), solve(1,1)))
+    print(max(solve(0,0), solve(0,1)))
