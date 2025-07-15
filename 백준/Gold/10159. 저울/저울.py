@@ -1,38 +1,41 @@
-from pprint import pprint
+from collections import deque
 
-def solve(cur: int):
-    ret = 1
 
-    for nxt in adj[cur]:
-        if visited[nxt]:
-            continue
-        biggers[nxt] += 1
-        visited[nxt] = True
-        ret += solve(nxt)
+def bfs(start, adj):
+    visited = [False] * (N+1)
+    q = deque([start])
+    visited[start] = True
 
+    ret = 0
+
+    while q:
+        cur = q.popleft()
+
+        for nxt in adj[cur]:
+            if visited[nxt]:
+                continue
+            visited[nxt] = True
+            ret += 1
+            q.append(nxt)
     return ret
 
 if __name__ == "__main__":
     N = int(input())
     M = int(input())
-    biggers = [0] * (N+1)
-    smallers = [0] * (N+1)
 
     adj = [[] for _ in range(N+1)]
+    rev_adj = [[] for _ in range(N+1)]
 
     for _ in range(M):
-        u, v = map(int,input().split())
+        u,v = map(int,input().split())
         adj[u].append(v)
-
-
-    for i in range(1,N+1):
-        visited = [False] * (N+1)
-        visited[i] = True
-        smallers[i] = solve(i)
-
+        rev_adj[v].append(u)
 
     ans = []
     for i in range(1,N+1):
-        ans.append(N - (smallers[i] + biggers[i]))
+        smaller = bfs(i, adj)
+        bigger = bfs(i, rev_adj)
+
+        ans.append(N - 1 - (smaller + bigger))
 
     print('\n'.join(map(str, ans)))
