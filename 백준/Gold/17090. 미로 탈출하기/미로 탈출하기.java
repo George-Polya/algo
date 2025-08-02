@@ -1,80 +1,66 @@
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
-public class Main{
-	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		st = new StringTokenizer(br.readLine());
-		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken());
-		
-		board = new char[N][M];
-		dp = new boolean[N][M];
-		
-		for(int  y=0;  y<N; y++) {
-			String line = br.readLine();
-			for(int x= 0; x<M; x++) {
-				board[y][x] = line.charAt(x);
-			}
-		}
-		
-		int ans = 0;
-		visited = new boolean[N][M];
-		for(int y= 0; y<N; y++) {
-			for(int x=0; x<M; x++) {
-				if(solve(y,x))
-					ans++;
-			}
-			
-		}
-		System.out.println(ans);
-		
-		
-	}
-	
-	static boolean solve(int y,int x) {
-		if(OOB(y,x))
-			return true;
-		if(visited[y][x])
-			return dp[y][x];
-		if(dp[y][x])
-			return dp[y][x];
-		
-		char ch = board[y][x];
-		Pair nxt = getNxtPos(y,x,ch);
-		visited[y][x] = true;
-		return dp[y][x] = solve(nxt.y, nxt.x);
-	}
-	static boolean visited[][];
-	
-	static Pair getNxtPos(int y,int x, char ch) {
-		if(ch == 'U') {
-			return new Pair(y + dy[0] ,x + dx[0]);
-		}else if(ch == 'R') {
-			return new Pair(y + dy[1], x + dx[1]);
-		}else if(ch == 'D') {
-			return new Pair(y + dy[2], x + dx[2]);
-		}
-		return new Pair(y + dy[3], x + dx[3]);
-	}
-	static boolean OOB(int y,int x) {
-		return y< 0 || y>=N || x<0 || x>=M;
-	}
-	static int dy[] = {-1,0,1,0};
-	static int dx[] = {0,1,0,-1};
-	
-	static class Pair{
-		int y,x;
-		public Pair(int y,int x) {
-			this.y = y;
-			this.x = x;
-		}
-	}
-	
-	
-	static StringTokenizer st;
-	static int N,M;
-	static char board[][];
-	static boolean dp[][];
+public class Main {
+    static int N, M;
+    static char[][] maze;
+    static int[][] dp; // 0: UNCHECKED, 1: ESCAPABLE, -1: TRAPPED, 2: VISITING
+
+    // ... (main 함수는 동일)
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+
+        maze = new char[N][M];
+        dp = new int[N][M];
+
+        for (int i = 0; i < N; i++) {
+            maze[i] = br.readLine().toCharArray();
+        }
+
+        int escapableCount = 0;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                // dfs의 결과가 1(ESCAPABLE)이면 카운트
+                if (dfs(i, j) == 1) {
+                    escapableCount++;
+                }
+            }
+        }
+        System.out.println(escapableCount);
+    }
+    
+    public static int dfs(int r, int c) {
+        // 1. 미로 범위를 벗어남 -> 탈출 성공
+        if (r < 0 || r >= N || c < 0 || c >= M) {
+            return 1; // ESCAPABLE
+        }
+
+        // 2. 이미 결과가 계산된 칸
+        if (dp[r][c] != 0 && dp[r][c] != 2) { // UNCHECKED(0)나 VISITING(2)가 아니면
+            return dp[r][c]; // 저장된 결과(1 또는 -1) 반환
+        }
+
+        // 3. 현재 탐색중인 경로에서 다시 만남 -> 사이클!
+        if (dp[r][c] == 2) {
+            return -1; // TRAPPED
+        }
+
+        // 현재 칸을 '탐색 중'으로 표시
+        dp[r][c] = 2; // VISITING
+
+        char direction = maze[r][c];
+        int next_r = r, next_c = c;
+        if (direction == 'U') next_r--;
+        else if (direction == 'R') next_c++;
+        else if (direction == 'D') next_r++;
+        else if (direction == 'L') next_c--;
+
+        // 다음 칸 탐색 결과를 현재 칸의 최종 결과로 저장 및 반환
+        return dp[r][c] = dfs(next_r, next_c);
+    }
 }
-
