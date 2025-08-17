@@ -3,34 +3,33 @@ from dataclasses import dataclass
 
 @dataclass
 class Info:
-    d : int
-    m : int
+    day : int
+    fine : int
 
-    def __lt__(self, other):
-        return self.d < other.d
 
 if __name__ == "__main__":
     N,T = map(int,input().split())
 
     arr = []
-    sm = 0
+    total = 0
     for _ in range(N):
         d,m = map(int,input().split())
         arr.append(Info(d,m))
-        sm += m
+        total += m
 
     arr = [0] + arr
 
     INF = -float('inf')
-    dp = [INF for _ in range(T+1)]
+    dp = [0 for _ in range(T+1)]
 
     dp[0] = 0
 
     for i in range(1,N+1):
-        for t in range(T, 0, -1):
-            if t - arr[i].d >= 0 and dp[t-arr[i].d] != INF:
-                dp[t] = max(dp[t], dp[t-arr[i].d] + arr[i].m)
+        day = arr[i].day
+        fine = arr[i].fine
+        for t in range(T, day - 1, -1):
+                dp[t] = max(dp[t], dp[t-day] + fine)
 
 
-    print(sm - max(dp))
-
+    ans = dp[T] if dp[T] != INF else 0
+    print(total - ans)
