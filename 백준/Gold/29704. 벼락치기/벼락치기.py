@@ -19,7 +19,7 @@ if __name__ == "__main__":
         arr.append(Info(d,m))
         sm += m
 
-    arr = [0] + sorted(arr)
+    arr = [0] + arr
 
     INF = -float('inf')
     dp = [INF for _ in range(T+1)]
