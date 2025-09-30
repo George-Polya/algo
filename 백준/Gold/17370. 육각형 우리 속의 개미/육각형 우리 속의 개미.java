@@ -12,12 +12,12 @@ public class Main{
 		int sx = MAX_R/2;
 		visited[sy][sx] = true;
 		
-		solve(sy,sx,0,0);
+		solve(sy,sx,2,0);
 		System.out.println(ans);
 	}
 	
 	
-	static int dy[] = {1,2,1,-1,-2,-1};
+	static int dy[] = { 0,  1,  1,  0, -1, -1 };
 	static int dx[] = {1,0,-1,-1,0,1};
 	static void solve(int y,int x ,int dir, int cnt) {
 		int ny = y + dy[dir];
@@ -34,7 +34,7 @@ public class Main{
 		
 		visited[ny][nx] = true;
 		solve(ny,nx,(dir + 1) % 6, cnt + 1);
-		solve(ny,nx, (dir + 5)% 6, cnt + 1);
+		solve(ny,nx, (dir + 5) % 6, cnt + 1);
 		visited[ny][nx] = false;
 	}
 	
