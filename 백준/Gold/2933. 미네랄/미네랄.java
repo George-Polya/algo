@@ -27,15 +27,15 @@ public class Main{
 //			System.out.println("before fall");
 //			printBoard(board);
 			
-			Cluster cluster = makeCluster();
-			if(!cluster.lists.isEmpty()) {
-				cluster.fall();
+			List<Pair> cluster = makeCluster();
+			if(!cluster.isEmpty()) {
+				fall(cluster);
 			}
 		}
 		printBoard(board);
 	}
 	
-	static Cluster makeCluster() {
+	static List<Pair> makeCluster() {
 		
 		visited = new boolean[R+1][C+1];
 		
@@ -53,7 +53,7 @@ public class Main{
 			}
 		}
 		
-		return new Cluster(lists);
+		return lists;
 	}
 	
 	static void bfs(int y, int x){
@@ -83,37 +83,30 @@ public class Main{
 	}
 	
 	static boolean visited[][];
-	static class Cluster{
-		List<Pair> lists;
-		public Cluster(List<Pair> lists) {
-			this.lists = lists;
+	
+	static boolean check(List<Pair> list) {
+		for(Pair p : list) {
+			int ny = p.y + 1;
+			int nx = p.x;
+			if(OOB(ny,nx) || board[ny][nx] == 'x')
+				return true;
 		}
+		return false;
+	}
+	
+	static void fall(List<Pair> list) {
+		for(Pair p : list)
+			board[p.y][p.x] = '.';
 		
-		public void fall() {
-			for(Pair p : lists) {
-				board[p.y][p.x] = '.';
-			}
-			
-			for(int i = 1; i<=R; i++) {
-				int nxt = i; 
-				List<Pair> list2 = lists.stream().map(p-> new Pair(p.y + nxt, p.x)).collect(Collectors.toList());
-				if(check(list2)) {
-					for(Pair p : list2) {
-						board[p.y][p.x] = 'x';
-					}
-					break;
+		for(int i = 1; i<=R; i++) {
+			int nxt = i;
+			List<Pair> list2 = list.stream().map(p-> new Pair(p.y + nxt, p.x)).collect(Collectors.toList());
+			if(check(list2)) {
+				for(Pair p : list2) {
+					board[p.y][p.x] = 'x';
 				}
+				break;
 			}
-		}
-		
-		private boolean check(List<Pair> list) {
-			for(Pair p : list) {
-				int ny = p.y + 1;
-				int nx = p.x;
-				if(OOB(ny,nx) || board[ny][nx] == 'x')
-					return true;
-			}
-			return false;
 		}
 	}
 	
