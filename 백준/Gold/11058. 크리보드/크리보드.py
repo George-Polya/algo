@@ -1,4 +1,3 @@
-
 def solve(n):
     if n <= 6:
         return n
