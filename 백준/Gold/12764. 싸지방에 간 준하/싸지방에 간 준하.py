@@ -1,58 +1,55 @@
-from dataclasses import dataclass
+import sys
 from heapq import heappush, heappop
-from typing import List
+from dataclasses import dataclass
+from collections import defaultdict
+# sys.setrecursionlimit(1000)
+
+@dataclass
+class Data:
+    end: int
+    idx: int
+
+    def __lt__(self, other):
+        return self.end < other.end
 
 @dataclass
 class Person:
     start: int
     end : int
 
-
     def __lt__(self, other):
         return self.start < other.start
 
-@dataclass
-class State:
-    end : int
-    pos: int
-
-    def __lt__(self, other):
-        return self.end < other.end
-
 if __name__ == "__main__":
     N = int(input())
-    people = []
+    arr = []
+
     for _ in range(N):
-        start, end = map(int,input().split())
-        people.append(Person(start, end))
+        start,end = map(int,input().split())
+        arr.append(Person(start, end))
 
-    people.sort()
+    arr.sort()
 
-    using_computers : List[State] = []
-    available_computers : List[int] = [ ]
-    positions = [0 for _ in range(N)]
+    idx = 1
+    used = []
+    availables = []
+    ans = defaultdict(int)
+    for cur in arr:
+        while used and used[0].end <= cur.start:
+            top = heappop(used)
+            heappush(availables, top.idx)
 
-    cnt = 0
-    for p in people:
-        while using_computers:
-            if p.start >= using_computers[0].end:
-                heappush(available_computers, heappop(using_computers).pos)
-            else:
-                break
-
-        if not available_computers:
-            heappush(using_computers, State(p.end, cnt))
-            positions[cnt] += 1
-            cnt+=1
+        if availables:
+            pos = heappop(availables)
+            ans[pos] += 1
+            heappush(used, Data(cur.end, pos))
         else:
-            idx = heappop(available_computers)
-            positions[idx] += 1
-            heappush(using_computers, State(p.end, idx))
+            heappush(used, Data(cur.end, idx))
+            ans[idx] += 1
+            idx+=1
 
-
-
-    print(cnt)
-    print(' '.join(map(str, positions[:cnt])))
-
-
-
+    sb = []
+    print(len(ans))
+    for key in sorted(ans.keys()):
+        sb.append(ans[key])
+    print(' '.join(map(str, sb)))
