@@ -33,7 +33,6 @@ import java.io.*;
 			}
 		}
 		
-		StringBuilder sb = new StringBuilder();
 		for(int y=1; y<=N; y++) {
 			for(int x=1; x<=M; x++) {
 				if(board[y][x] == '1') {
@@ -58,16 +57,11 @@ import java.io.*;
 					for(int idx : seend) {
 						cnt += counts.get(idx);
 					}
-					sb.append(cnt % 10);
-					
-				}else {
-					sb.append('0');
+					cBoard[y][x] = cnt % 10;
 				}
 			}
-			sb.append('\n');
 		}
-		System.out.println(sb);
-//		printBoard(cBoard);
+		printBoard(cBoard);
 		
 	}
 	static int bfs(int y,int x, int id) {
@@ -100,7 +94,6 @@ import java.io.*;
 		StringBuilder sb = new StringBuilder();
 		for(int y=1; y<=N; y++) {
 			for(int x=1; x<=M; x++) {
-				System.out.printf("%d", board[y][x]);
 				sb.append(board[y][x]);
 			}
 			sb.append('\n');
