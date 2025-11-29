@@ -1,28 +1,36 @@
+from collections import namedtuple
 from dataclasses import dataclass
-import sys
 
-# sys.setrecursionlimit(100)
 @dataclass
-class Task:
+class Pair:
     d: int
     t: int
 
     def __lt__(self, other):
         return self.t > other.t
-if __name__ == "__main__":
-    N = int(input())
 
-    tasks = []
+    def __repr__(self):
+        return f"d:{self.d} t:{self.t}"
+
+if __name__ == "__main__":
+
+    N = int(input())
+    arr = []
 
     for _ in range(N):
         d,t = map(int,input().split())
-        tasks.append(Task(d, t))
+        arr.append(Pair(d,t))
 
-    cur = float('inf')
+    arr.sort()
+    # print(arr)
 
-    for info in sorted(tasks):
-        end = min(cur, info.t)
-        start = end - info.d
-        cur = start
+    cur = start = int(1e9) + 1
 
-    print(cur)
+    for p in arr:
+        cur = min(cur, p.t)
+        if p.t > start:
+            cur = min(cur, start)
+
+        start = cur - p.d
+
+    print(start)
